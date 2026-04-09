@@ -13,7 +13,15 @@
 
 ## 0. Executive summary
 
-We will build a single repository-level system under `grace/` that competes in **both tracks** of GRACE @ IberLEF 2026, targets a full research contribution (leaderboard + IberLEF system paper + public code release under Apache-2.0), and fits the user's compute (RTX 4050 Laptop 6 GB + Kaggle/Colab free tiers). The system is hybrid by design:
+We will build a single repository-level system under `grace/` that competes in **both tracks** of GRACE @ IberLEF 2026, targets a full research contribution (leaderboard + IberLEF system paper + public code release under Apache-2.0), and fits the user's compute:
+
+- **Local:** RTX 4050 Laptop 6 GB VRAM + 16 GB shared memory. **Only suitable for BETO, XLM-R-base, and smoke tests.**
+- **Remote:** Kaggle Notebooks P100 16 GB. **XLM-R-large training is constrained to here.** Budget against Kaggle's 30 GPU-hour/week cap.
+- **APIs:** Claude + GPT-4 via SDK for Track 2 LLM reasoning. Hard budget cap of **$250 total** enforced via `experiments/budget.yaml`.
+- **Windows caveat:** `bitsandbytes` on native Windows 11 is fragile; if QLoRA becomes necessary the user installs WSL2 on Day 1. Otherwise stick to native torch/transformers.
+- **Codabench quota:** 3-5 submissions/day typical — budget at most 2 dev-phase and 3 test-phase uploads.
+
+The system is hybrid by design:
 
 - **Track 1 (Clinical Trial Evidence & Argumentation)** — multilingual encoder fine-tuning (XLM-R-large / mDeBERTa-v3 / BETO) with class-weighted loss and cross-lingual rare-class augmentation.
 - **Track 2 (Clinical Case Reasoning on MIR)** — LLM chain-of-thought reasoning conditioned on the provided `correct_choice_id`, distilled into a compact open-weights NLI student for reproducibility and rules-compliance.
@@ -387,16 +395,13 @@ Reproducible CLI producing Markdown reports in `experiments/audits/<timestamp>.m
 
 | Model | Spanish coverage | Max seq | Size | Laptop 4050 fit | Rationale |
 |---|---|---|---|---|---|
-| XLM-RoBERTa-base | ✅ multilingual | 512 | 278 M | ✅ | Reliable fallback; proven on AbstRCT |
-| **XLM-RoBERTa-large** | ✅ | 512 | 560 M | ⚠️ Kaggle P100 only | **Primary — best expected** |
-| **mDeBERTa-v3-base** | ✅ | 512 | 278 M | ✅ | **Primary** — strong XNLI |
-| BETO (bert-base-spanish-wwm-cased) | ✅ Spanish | 512 | 110 M | ✅ | Fast baseline |
-| PlanTL-GOB-ES/roberta-base-bne | ✅ Spanish | 512 | 125 M | ✅ | Spanish BNE corpus |
-| IXA-ehu/ixambert-base-cased | ✅ (ES, EU, EN) | 512 | 110 M | ✅ | HiTZ-lab origin, politically appropriate baseline |
+| **XLM-RoBERTa-large** | ✅ multilingual | 512 | 560 M | ⚠️ Kaggle P100 only | **Primary — best expected headline number** |
+| **BETO (bert-base-spanish-wwm-cased)** | ✅ Spanish | 512 | 110 M | ✅ | **Secondary — local debug + fast iteration + paper's second system** |
+| XLM-RoBERTa-base | ✅ | 512 | 278 M | ✅ | Smoke-test baseline only |
 
-**Training plan:** all three of XLM-R-large, mDeBERTa-v3-base, and BETO. Ensemble top-2 via logit averaging.
+**Training plan (revised after plan-review-gate):** **Two backbones only** — XLM-R-large as the primary submission system, BETO as the local-debug rig and the paper's second-best-system comparison point. **mDeBERTa-v3 cut** — 3-backbone × 5-ablation × 3-seed sweep does not fit in the Kaggle 30-GPU-hour/week cap. Ensemble = XLM-R-large (3 seeds) → logit averaging.
 
-**Not considered:** SciBERT/BioBERT/ClinicalBERT (English-only), LlamaCare/BioMistral (overparameterized for 512-token classification, no evidence of beating XLM-R-large on token classification, don't fit on 4050).
+**Not considered:** SciBERT/BioBERT/ClinicalBERT (English-only), LlamaCare/BioMistral (overparameterized for token classification). mDeBERTa-v3 is a **post-deadline stretch goal** if the workshop paper needs a third system for reviewer questions.
 
 ### 3.2 Subtask 1 — Component Detection
 
@@ -500,26 +505,23 @@ Three facts from the data audit reshape the problem:
 
 Three-way ensemble:
 
-**Model A — BETO sentence classifier** (cheap, reproducible)
+**Model A — BETO sentence classifier** (cheap, reproducible, primary)
 - `dccuchile/bert-base-spanish-wwm-cased`
 - Input: `[CLS] <context> [SEP] <sentence> [SEP] <correct_option_text> [SEP]`
 - Binary head, class-weighted BCE
 - 10 epochs, early stop on dev F1(relevant)
 
-**Model B — XLM-R fine-tuned on XNLI-ES + GRACE**
-- Pretrain on Spanish XNLI as entailment classifier
-- Fine-tune on GRACE sentence relevance
-- Prior: a sentence entailing a correct-option claim is relevant
-
-**Model C — Few-shot LLM prompt**
+**Model C — Few-shot LLM prompt** (quality ceiling)
 - 6-8 exemplars stratified by label and medical specialty
 - Structured JSON output
-- Claude 4.6 Sonnet primary, GPT-4o secondary, Qwen2.5-72B-Instruct (OpenRouter) as open-weights alternative
-- Cost budget ~$5-15 for dev+test
+- Claude 4.6 Sonnet primary, GPT-4o secondary
+- Cost budget ~$20-30 for dev+test
 
-**Ensemble:** majority vote, ties → `relevant` (false negatives propagate to Subtask 2).
+**Cut after plan-review-gate:** Model B (XLM-R + XNLI transfer). A 2-way A+C ensemble is simpler, more defensible in the paper, and saves 1-2 days of Phase 4. The Model B variant becomes a post-deadline stretch.
 
-**Expected F1(relevant):** 0.75-0.85 (solo BETO ~0.72, with LLM ~0.82, ensemble ~0.85).
+**Ensemble:** 2-way majority vote (A, C). Ties → `relevant` (false negatives on Subtask 1 propagate to Subtask 2).
+
+**Expected F1(relevant):** 0.72-0.85 (solo BETO ~0.72, with LLM ~0.80, ensemble ~0.82-0.85).
 
 ### 4.3 Subtask 2 — Premise Span Extraction
 
@@ -555,10 +557,16 @@ For each proposed phrase:
 3. Partial/ambiguous (multi-relation premise)
 4. Negation (absence of symptom as evidence)
 
-**Scale:**
+**Scale (revised after plan-review-gate, with honest token accounting):**
 - Train: 128 cases × ~9 premises × ~5 options ≈ 5,760 pair calls
 - Dev: 24 cases × ~45 ≈ 1,080 pair calls
-- Estimated cost at Claude Sonnet pricing (~$0.003/1k input): $35-50 total for train+dev
+- Per-call input tokens: ~3,500-5,000 (exemplars + case + premise + all options)
+- Per-call output tokens: ~400-800 (CoT reasoning)
+- At Claude Sonnet pricing ($3/MTok input, $15/MTok output): ~$0.015-0.027 per pair × 6,840 pairs = **$100-180 for Subtask 3 alone**
+- Plus Subtask 1 (Model C sentence classifier LLM calls): ~$20-30
+- Plus Subtask 2 (premise extractor LLM calls): ~$20-30
+- Plus prompt-engineering iteration (500-2000 test calls): ~$10-30
+- **Total LLM budget: $150-250 hard cap** (enforced via `experiments/budget.yaml` read by `LLMReasoner` in every run)
 
 ### 4.5 Distillation to open-weights student
 
@@ -720,15 +728,22 @@ Before committing to the closed-API pipeline, verify IberLEF 2026 GRACE rules ex
 - **Closed APIs allowed:** Final = LLM + distilled student ensemble. Paper gains additional ablation.
 - **Pipeline design works without modification either way** — the student is baked in from day one.
 
-### 5.7 Python project hygiene
+### 5.7 Python project hygiene (trimmed after plan-review-gate)
 
 Per user's global rules in `~/.claude/rules/python/`:
 - PEP 8 + type annotations on all function signatures
-- Formatting: `black`, `isort`, `ruff`
-- Testing: `pytest` with `pytest-cov`; **100% coverage target per CLAUDE.md** (`.coverage-thresholds.json`)
-- Security: `bandit -r grace/` before every commit
-- Type checking: `mypy --strict` on `grace/io/` and `grace/eval/`; relaxed elsewhere
-- Pre-commit hook: `black → ruff → mypy → pytest --cov`; hook failures block commits; never `--no-verify`
+- Formatting: `black`, `ruff` (with I rule set for import sorting)
+- Testing: `pytest` with `pytest-cov`
+- **Coverage thresholds** — per-module to avoid ML-code coverage theater:
+  - `grace/io/*`: 95%+ lines (correctness-critical)
+  - `grace/eval/*`: 95%+ lines (correctness-critical)
+  - `grace/submit/*`: 90%+ lines
+  - `grace/track1/*`, `grace/track2/*`: 70%+ lines (training loops are hard to cover without a GPU)
+  - Overall: 80%+ lines
+  - Enforced via `.coverage-thresholds.json` read by a custom pytest plugin in `tests/conftest.py`
+- **Pre-commit hooks** — minimal to reduce sprint friction: `black → ruff` only. No mypy, no pytest in pre-commit, no bandit. `mypy` runs in CI / manually before PRs but not on every commit.
+- **Security:** `bandit -r grace/` before every merge to main (not every commit)
+- **CLI framework:** plain `argparse` (not `typer`) — one less dep, less ceremony, fine for a solo project
 - Library code uses `logging`, not `print()`; `print` OK in scripts/CLI output
 
 ### 5.8 Git workflow
@@ -761,32 +776,40 @@ Day 0 is 2026-04-09 (today). Day 13 is 2026-04-22 (test set release). Day 24 is 
 
 | Day | Date | Phase | Deliverable | Checkpoint? |
 |---|---|---|---|---|
-| 0 | 04-09 | Design | Design doc + plan committed | ✅ User approval gate |
-| 1 | 04-10 | Foundation | `grace/` package scaffolded, `pyproject.toml`, CI pre-commit hooks | — |
-| 1 | 04-10 | Foundation | Loaders + dataclasses + offset library + Section 2 tests | — |
-| 2 | 04-11 | Rules | Rules-verification snapshot committed | ⚠️ Blocking for Track 2 closed-API decision |
-| 2 | 04-11 | Baseline T1 | XLM-R-base BIO tagger trained; scorer-parity dev run; ledger entry | — |
-| 3 | 04-12 | Baseline T1 | Track 1 relation classifier baseline | — |
-| 4 | 04-13 | Baseline T2 | BETO sentence classifier (Subtask 1) dev eval | — |
-| 5 | 04-14 | Baseline T2 | LLM reasoner prompt engineering + few-shot exemplars | ✅ User checkpoint: review prompts + exemplars |
-| 6 | 04-15 | Improve T1 | Cross-lingual augmentation pipeline | — |
-| 7 | 04-16 | Improve T1 | Augmentation ablations A0-A3 on XLM-R-large | — |
-| 8 | 04-17 | Improve T2 | Full LLM reasoner on train + dev (builds cache) | — |
-| 9 | 04-18 | Improve T2 | Distilled student training with ablations | — |
-| 10 | 04-19 | Ensemble | Track 1 model ensemble (top-2) | — |
-| 11 | 04-20 | Ensemble | Track 2 ensemble + error analysis | ✅ User checkpoint: dev scores review |
-| 12 | 04-21 | Integration | Full end-to-end runs on dev, both tracks; submit dev-phase to Codabench if open | ✅ User confirmation for upload |
-| **13** | **04-22** | **TEST RELEASE** | **Official test set released.** Clone best configs, run on test data, verify format | — |
-| 14-18 | 04-23…04-27 | Iteration | Error-analysis-driven fixes; seed averaging; final ensemble selection. No new components. | — |
-| 19 | 04-28 | Paper draft | Outline + abstract; results tables auto-generated from ledger | ✅ User review: outline |
-| 20 | 04-29 | Paper draft | Methods + Results sections | — |
-| 21 | 04-30 | Paper draft | Error Analysis + Discussion sections | — |
-| 22 | 05-01 | Final run | Regenerate test predictions with finalized ensemble; diagnostics | — |
+| 0 | 04-09 | Design | Design doc + plan committed + plan-review-gate passed | ✅ User approval gate |
+| 1 | 04-10 | Foundation | `grace/` scaffold (minimal pre-commit, argparse CLIs), `pyproject.toml`, `.env`, WSL2 setup if bitsandbytes needed | — |
+| 1 | 04-10 | Foundation | Loaders + dataclasses + OfficialTokenizer + tokenizer-parity test | — |
+| 2 | 04-11 | Foundation | `SpanAligner` (snap, validate, BIO encode/decode, **sliding window** for long abstracts) + scorer self-consistency test | — |
+| 2 | 04-11 | Foundation | Manual data-reading pass: 15 Track 1 cases + 10 Track 2 cases, written observations | — |
+| 3 | 04-12 | Rules + Eval | Rules-verification snapshot; scorer wrapper + ledger + diagnose.py + formatter + validator + package.py + user-facing submit.py CLI | ⚠️ Blocking for Track 2 closed-API decision |
+| 4 | 04-13 | Baseline T1 | XLM-R-base local smoke training (overfit-check) + Kaggle notebook setup + checkpoint/resume logic | — |
+| 5 | 04-14 | Baseline T1 | XLM-R-large BIO tagger + relation classifier 3 seeds on Kaggle; first ledger numbers | — |
+| 6 | 04-15 | Baseline T2 | BETO sentence classifier + LLM reasoner infra (Anthropic + OpenAI only; no OpenRouter) + cache + budget cap | — |
+| 7 | 04-16 | Baseline T2 | Prompt templates + exemplar library + premise extractor + relation reasoner | ✅ User checkpoint: review prompts + exemplars |
+| 8 | 04-17 | Augmentation | Cross-lingual download + translate + project + **hand-labeled projection eval** (30 examples) | — |
+| 9 | 04-18 | Augmentation | Entailment filter + Track 1 A0-A2 ablations on XLM-R-large | — |
+| 10 | 04-19 | Augmentation | A3 class-weighted + A4 seed-averaged ablations + per-rare-class delta table | — |
+| 11 | 04-20 | LLM + distill | Full LLM reasoner train+dev pass (builds cache); HP sweep on best Track 1 backbone | — |
+| 12 | 04-21 | LLM + distill | Distilled student training (gold / gold+silver / +augmentation) + **conditioning ablation** (with vs. without correct_choice_id) | ✅ User checkpoint: dev scores review |
+| **13** | **04-22** | **TEST RELEASE + Integration** | **Official test set released.** Download, smoke test, verify format. Run ensembles on dev for both tracks. Submit dev-phase if open. | ✅ User confirmation for any upload |
+| 14-18 | 04-23…04-27 | Iteration | Error-analysis-driven fixes. **Hard rule: no new modules after Day 12.** Stop if Day 20 dev score within 3 points of Day 18. | — |
+| 19 | 04-28 | Paper draft | Outline + Intro + Related Work sections; results tables auto-generated from ledger | ✅ User review: outline |
+| 20 | 04-29 | Paper draft | Task Description + System + Experiments + Methods sections | — |
+| 21 | 04-30 | Paper draft | Results + Error Analysis + Discussion sections | — |
+| 22 | 05-01 | Final run | Regenerate test predictions with finalized ensemble; diagnostics. **Code freeze.** | — |
 | 23 | 05-02 | Final run | Final submission packages; full scorer-parity check on dev | ✅ **User confirmation required** before upload |
-| **24** | **05-03** | **SUBMIT** | **Upload Track 1 + Track 2 final submissions to Codabench** | ✅ User confirms |
-| 25-44 | 05-04…05-23 | Paper finish | Complete ablations, limitations, camera-ready polish | — |
+| **24** | **05-03** | **SUBMIT** | **Upload Track 1 + Track 2 final submissions to Codabench** (≤3 of the 5 daily quota) | ✅ User confirms |
+| 25-44 | 05-04…05-23 | Paper finish | Limitations, Conclusion, camera-ready polish, references.bib, discrepancy report to organizers | — |
 | **45** | **05-24** | **Paper deadline** | **IberLEF system paper submitted to CEUR-WS** | ✅ User reviews before submit |
-| 45+ | 05-25+ | Code release | `grace-iberlef-2026` repo public on GitHub; HF models if competitive | — |
+| 45+ | 05-25+ | Code release | `grace-iberlef-2026` repo public on GitHub; HF models if competitive; offset-alignment utility documented as reusable contribution | — |
+
+**Stopping criteria (enforced during Days 14-18 iteration):**
+
+1. **Convergence rule:** If Day 20 dev score is within 3 F1 points of Day 18 dev score, freeze — no more iteration.
+2. **Augmentation rule:** If A2 (entailment-filtered silver) does not beat A0 (baseline) by ≥ 2 macro-F1 points, cut it from the final submission but keep the ablation for the paper.
+3. **Module freeze:** No new Python modules after Day 12. Days 14-18 are hyperparameter tuning + error-analysis fixes only.
+4. **Budget cap:** LLM spend hard-capped at $250 via `experiments/budget.yaml`. `LLMReasoner` aborts with `BudgetExceededError` before the call that would exceed the cap.
+5. **Submission cap awareness:** Codabench typically allows 3-5 submissions/day. Budget at most 2 for the dev phase and 3 for the test phase across both tracks.
 
 ### 6.2 Human checkpoints
 
