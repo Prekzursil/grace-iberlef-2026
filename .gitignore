@@ -14,6 +14,16 @@ __pycache__/
 data/*
 !data/.gitkeep
 
+# GRACE 2026 organizer-provided data (not redistributable)
+downloaded_data/
+
+# GRACE 2026 experiment artifacts (local run outputs)
+experiments/
+grace/*/__pycache__/
+
+# System paper drafts (WIP, not yet ready for public share)
+docs/paper/draft.md
+
 # ToolUniverse local caches
 .tooluniverse/
 .tooluniverse_cache/
