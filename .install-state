@@ -1,8 +1,10 @@
-phase=sdk-validated
+phase=install-complete
 date=2026-04-09
 tooluniverse_version=1.1.11
 tool_count=2216
-keyless_probe=EuropePMC_search_articles OK (2026 paper returned)
-keyed_probe=PubMed_search_articles OK (3222 results, NCBI key working)
+skills_installed=108 (via npx skills add -y -g)
+mcp_global=true (uvx tooluniverse, compact mode default)
 keys_set=NCBI_API_KEY SEMANTIC_SCHOLAR_API_KEY FDA_OPENFDA_KEY
 keys_pending=UMLS_API_KEY (NIH approval 1-2 days)
+validation=sdk_ok mcp_preflight_ok skills_live_in_session
+pre_install_backup=~/.claude.json.bak-pre-tooluniverse
