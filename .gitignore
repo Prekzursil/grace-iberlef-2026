@@ -1,0 +1,26 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Data (large downloads, local caches, analysis outputs)
+data/*
+!data/.gitkeep
+
+# ToolUniverse local caches
+.tooluniverse/
+.tooluniverse_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MCP backups (in user home, not repo, but ignore if any leak in)
+.claude.json.bak-*
