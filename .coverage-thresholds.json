@@ -1,0 +1,12 @@
+{
+  "lines": 80,
+  "branches": 70,
+  "functions": 80,
+  "statements": 80,
+  "critical_modules": {
+    "grace/io": 95,
+    "grace/eval": 95,
+    "grace/submit": 90
+  },
+  "note": "Sprint-mode thresholds approved by user during plan-review-gate. ML training loops are hard to cover without GPU, so overall target is 80% lines but correctness-critical modules (grace/io, grace/eval, grace/submit) must reach 90-95% individually. Enforced manually before PR creation, not on every commit."
+}
