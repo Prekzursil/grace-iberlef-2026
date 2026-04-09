@@ -161,11 +161,10 @@ bionlp/
 │   ├── llm_cache/<hash>.json
 │   └── audits/<timestamp>.md
 │
-├── notebooks/
-│   ├── 00_data_audit.ipynb
-│   ├── 01_track1_eda.ipynb
-│   ├── 02_track2_eda.ipynb
-│   └── 03_error_analysis.ipynb
+├── notebooks/                     (optional, post-deadline only)
+│   └── (reserved for post-competition exploration; cut from the 24-day
+│        sprint scope after the plan-review-gate — audits happen via
+│        scripts/audit_data.py and grace/eval/diagnose.py instead)
 │
 ├── docs/
 │   ├── plans/                     (existing)
