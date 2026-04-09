@@ -32,7 +32,7 @@ import yaml
 from grace.eval.scorer import score_track1_from_file, scorer_fingerprint
 from grace.eval.tracker import LedgerEntry, append_entry, sha256_file
 from grace.io.loaders import load_track1
-from grace.submit.formatter import format_submission
+from grace.submit.formatter import format_predictions
 from grace.track1.component_tagger import ComponentTagger, ComponentTaggerConfig
 
 
@@ -100,11 +100,11 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
             n_batches += 1
         print(f"epoch {epoch + 1}/{num_epochs}: mean loss = {epoch_loss / max(n_batches, 1):.4f}")
 
-    # Predict + score on dev
+    # Predict + score on dev (two-file mode: gold from original, predictions from model)
     preds = tagger.predict(dev_cases)
     dev_pred_path = run_dir / "predictions_dev.json"
-    format_submission(preds, dev_pred_path, track=1)
-    results = score_track1_from_file(dev_pred_path)
+    format_predictions(preds, dev_pred_path, track=1)
+    results = score_track1_from_file(dev_pred_path, gold_path=dev_path)
 
     metrics = {
         "subtask1_official": results["subtask1"]["official_score"],
