@@ -12,6 +12,8 @@ export PYTHONIOENCODING=utf-8
 WORKSPACE="/c/Users/Prekzursil/Downloads/bionlp"
 VENV="$WORKSPACE/.venv"
 CLAUDE_CONFIG="/c/Users/Prekzursil/.claude.json"
+# Windows-native path for Python calls (Python.exe doesn't understand git-bash /c/... paths)
+CLAUDE_CONFIG_WIN='C:\Users\Prekzursil\.claude.json'
 
 red()    { printf '\033[31m%s\033[0m\n' "$*"; }
 green()  { printf '\033[32m%s\033[0m\n' "$*"; }
@@ -127,7 +129,7 @@ check_claude_config() {
     red "FAIL: $CLAUDE_CONFIG not found"; return 1
   fi
 
-  if python -c "import json; json.load(open(r'$CLAUDE_CONFIG', encoding='utf-8'))" 2>/dev/null; then
+  if python -c "import json; json.load(open(r'$CLAUDE_CONFIG_WIN', encoding='utf-8'))" 2>/dev/null; then
     green "OK: $CLAUDE_CONFIG is valid JSON"
   else
     red "FAIL: $CLAUDE_CONFIG is invalid JSON"; return 1
@@ -135,7 +137,7 @@ check_claude_config() {
 
   if python -c "
 import json, sys
-d = json.load(open(r'$CLAUDE_CONFIG', encoding='utf-8'))
+d = json.load(open(r'$CLAUDE_CONFIG_WIN', encoding='utf-8'))
 def has_tu(obj):
     if isinstance(obj, dict):
         if 'tooluniverse' in obj: return True
