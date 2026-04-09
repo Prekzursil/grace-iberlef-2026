@@ -1,0 +1,22 @@
+# Consolidated LLM API cost cap - hard-enforced by grace/track2/llm_reasoner.py
+# Revised upward from the design doc's original $50 after plan-review-gate
+# round 1 discovered the original estimate under-counted input tokens by ~3x.
+hard_cap_usd: 250
+breakdown_estimate:
+  subtask1_sentence_classifier_llm_calls: 25
+  subtask2_premise_extractor_llm_calls: 30
+  subtask3_relation_reasoner_llm_calls: 150
+  prompt_engineering_iteration: 30
+  contingency: 15
+  total: 250
+provider_prices:
+  claude-sonnet:
+    input_per_mtok_usd: 3.0
+    output_per_mtok_usd: 15.0
+  claude-opus:
+    input_per_mtok_usd: 15.0
+    output_per_mtok_usd: 75.0
+  gpt-4o:
+    input_per_mtok_usd: 2.5
+    output_per_mtok_usd: 10.0
+abort_on_exceed: true

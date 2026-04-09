@@ -23,7 +23,8 @@ data/*
 downloaded_data/
 
 # GRACE 2026 experiment artifacts (local run outputs)
-experiments/
+experiments/*
+!experiments/budget.yaml
 grace/*/__pycache__/
 
 # System paper drafts (WIP, not yet ready for public share)
