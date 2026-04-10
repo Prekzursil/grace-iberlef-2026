@@ -1,0 +1,41 @@
+# GRACE @ IberLEF 2026 - BETO + Focal Loss (gamma=2.0)
+#
+# Lower gamma to compare with gamma=2.5 variant.
+tag: beto-focal-g2-20ep
+track: 1
+backbone: dccuchile/bert-base-spanish-wwm-cased
+
+task:
+  subtask1:
+    max_length: 512
+    stride: 128
+    loss: focal
+    focal_gamma: 2.0
+    class_weights:
+      O: 0.25
+      Premise: 1.0
+      Claim: 2.0
+      MajorClaim: 8.0
+
+  subtask2:
+    max_length: 512
+    class_weights:
+      no-relation: 1.0
+      Support: 1.0
+      Attack: 15.0
+      Partial-Attack: 5.0
+    negative_sampling_ratio: 3.0
+
+training:
+  optimizer: adamw
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  num_epochs: 20
+  batch_size: 16
+  seeds: [42]
+
+data:
+  train: downloaded_data/public_data/public_data/track_1_train.json
+  dev: downloaded_data/public_data/public_data/track_1_dev.json
+
+notes: "BETO + focal loss (gamma=2.0, O-weight=0.25). Compare with gamma=2.5."

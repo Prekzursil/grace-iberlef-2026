@@ -25,6 +25,7 @@ dependencies = [
   "rich>=13.7",
   "huggingface-hub>=0.25",
   "Levenshtein>=0.25",
+  "pytorch-crf>=0.7.2",
 ]
 
 [project.optional-dependencies]

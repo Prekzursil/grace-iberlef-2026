@@ -1,0 +1,37 @@
+# GRACE @ IberLEF 2026 - RigoBERTa 2.0 with mid LR
+tag: rigoberta2-midlr-20ep
+track: 1
+backbone: IIC/RigoBERTa-2.0
+
+task:
+  subtask1:
+    max_length: 512
+    stride: 128
+    class_weights:
+      O: 1.0
+      Premise: 1.0
+      Claim: 2.0
+      MajorClaim: 8.0
+
+  subtask2:
+    max_length: 512
+    class_weights:
+      no-relation: 1.0
+      Support: 1.0
+      Attack: 15.0
+      Partial-Attack: 5.0
+    negative_sampling_ratio: 3.0
+
+training:
+  optimizer: adamw
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  num_epochs: 20
+  batch_size: 16
+  seeds: [42]
+
+data:
+  train: downloaded_data/public_data/public_data/track_1_train.json
+  dev: downloaded_data/public_data/public_data/track_1_dev.json
+
+notes: "RigoBERTa 2.0 at lr=2e-5 (mid-range for large model)."

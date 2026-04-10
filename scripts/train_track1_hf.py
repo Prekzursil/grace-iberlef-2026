@@ -25,6 +25,7 @@ from torch.utils.data import Dataset
 from transformers import (
     AutoModelForTokenClassification,
     AutoTokenizer,
+    DataCollatorForTokenClassification,
     Trainer,
     TrainingArguments,
 )
@@ -164,10 +165,17 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
         dataloader_num_workers=0,
     )
 
+    data_collator = DataCollatorForTokenClassification(
+        tokenizer=tokenizer,
+        padding=True,
+        label_pad_token_id=-100,  # ignored in loss computation
+    )
+
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
+        data_collator=data_collator,
     )
 
     print(
