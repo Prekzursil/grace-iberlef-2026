@@ -1,0 +1,47 @@
+# GRACE @ IberLEF 2026 - FINAL SUBMISSION CONFIG
+#
+# Winner from 27-experiment sweep on H100 80GB:
+# BETO 20ep lr=3e-5 CE + pairwise RelationClassifier
+#
+# This config is the most stable across seeds:
+# Mean S1=0.383 (±0.025), Mean S2=0.080 (±0.017), Mean Overall=0.231 (±0.017)
+# Best seed (456): S1=0.401, S2=0.105, Overall=0.253
+#
+# Architecture upgrades (CRF, BiLSTM, focal loss) all REDUCE mean
+# performance despite occasionally higher single-seed scores.
+tag: FINAL-beto-ce-20ep
+track: 1
+backbone: dccuchile/bert-base-spanish-wwm-cased
+
+task:
+  subtask1:
+    max_length: 512
+    stride: 128
+    class_weights:
+      O: 1.0
+      Premise: 1.0
+      Claim: 2.0
+      MajorClaim: 8.0
+
+  subtask2:
+    max_length: 512
+    class_weights:
+      no-relation: 1.0
+      Support: 1.0
+      Attack: 15.0
+      Partial-Attack: 5.0
+    negative_sampling_ratio: 3.0
+
+training:
+  optimizer: adamw
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  num_epochs: 20
+  batch_size: 16
+  seeds: [42, 123, 456, 789, 2026]
+
+data:
+  train: downloaded_data/public_data/public_data/track_1_train.json
+  dev: downloaded_data/public_data/public_data/track_1_dev.json
+
+notes: "FINAL: BETO CE 20ep lr=3e-5. Winner from 27-experiment sweep. Stable across seeds."

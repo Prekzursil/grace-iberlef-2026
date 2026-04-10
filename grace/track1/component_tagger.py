@@ -158,6 +158,7 @@ class ComponentTagger:
                 num_labels=self.num_labels,
                 id2label=dict(enumerate(_LABELS)),
                 label2id=_LABEL2ID,
+                ignore_mismatched_sizes=True,
             )
             self.encoder = None
             self.bilstm = None

@@ -61,6 +61,7 @@ class RelationClassifier:
             num_labels=self.num_labels,
             id2label=_ID2LABEL,
             label2id=_LABEL2ID,
+            ignore_mismatched_sizes=True,
         )
 
     def _encode_pair(
