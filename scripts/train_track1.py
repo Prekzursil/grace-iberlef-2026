@@ -67,6 +67,21 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     dev_cases = list(load_track1(dev_path))
     print(f"Loaded {len(train_cases)} train cases, {len(dev_cases)} dev cases")
 
+    # Apply augmentation if configured
+    aug_cfg = cfg.get("augmentation", {})
+    if aug_cfg.get("enabled") and aug_cfg.get("strategy") == "oversample":
+        from grace.track1.augment import oversample_rare_classes
+
+        train_cases = list(
+            oversample_rare_classes(
+                tuple(train_cases),
+                majorclaim_factor=aug_cfg.get("majorclaim_factor", 5),
+                attack_factor=aug_cfg.get("attack_factor", 3),
+                partial_attack_factor=aug_cfg.get("partial_attack_factor", 2),
+            )
+        )
+        print(f"After oversampling: {len(train_cases)} train cases")
+
     tagger = ComponentTagger(
         ComponentTaggerConfig(
             backbone=cfg["backbone"],

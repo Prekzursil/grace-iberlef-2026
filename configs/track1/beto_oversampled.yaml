@@ -1,0 +1,54 @@
+# GRACE @ IberLEF 2026 - Track 1 BETO with rare-class oversampling.
+#
+# Based on the best config (BETO 20ep lr=3e-5) plus oversampling of
+# cases containing MajorClaim (5x), Attack (3x), Partial-Attack (2x).
+# This is the simplest augmentation strategy — no external data needed.
+tag: beto-oversampled
+track: 1
+backbone: dccuchile/bert-base-spanish-wwm-cased
+
+task:
+  subtask1:
+    max_length: 512
+    stride: 128
+    class_weights:
+      O: 1.0
+      Premise: 1.0
+      Claim: 2.0
+      MajorClaim: 8.0
+
+  subtask2:
+    max_length: 512
+    input_scheme: marker_typed
+    class_weights:
+      no-relation: 1.0
+      Support: 1.0
+      Attack: 15.0
+      Partial-Attack: 5.0
+    negative_sampling_ratio: 3.0
+
+training:
+  optimizer: adamw
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  num_epochs: 20
+  batch_size: 16
+  gradient_accumulation_steps: 1
+  mixed_precision: fp16
+  seeds: [42]
+  early_stopping_patience: 3
+  early_stopping_metric: subtask1_official
+
+data:
+  train: downloaded_data/public_data/public_data/track_1_train.json
+  dev: downloaded_data/public_data/public_data/track_1_dev.json
+
+augmentation:
+  enabled: true
+  strategy: oversample
+  majorclaim_factor: 5
+  attack_factor: 3
+  partial_attack_factor: 2
+
+notes: "BETO + rare-class oversampling (5x MajorClaim, 3x Attack, 2x PA). Same lr/epochs as best baseline."
