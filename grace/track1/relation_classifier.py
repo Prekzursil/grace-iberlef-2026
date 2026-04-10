@@ -157,6 +157,8 @@ class RelationClassifier:
                     if e1.id == e2.id:
                         continue
                     enc = self._encode_pair(case.raw_text, e1.text, e1.type, e2.text, e2.type)
+                    device = next(self.model.parameters()).device
+                    enc = {k: v.to(device) for k, v in enc.items()}
                     logits = self.model(**enc).logits
                     pred_id = int(logits.argmax(-1).item())
                     lbl = _ID2LABEL[pred_id]
