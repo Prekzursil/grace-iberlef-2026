@@ -1,0 +1,344 @@
+[
+  {
+    "model": "microsoft/mdeberta-v3-base",
+    "prefix": "mdeberta_v3",
+    "mean_macro": 0.7046309115368304,
+    "std": 0.02830191778939488,
+    "runs": [
+      {
+        "model": "microsoft/mdeberta-v3-base",
+        "prefix": "mdeberta_v3",
+        "seed": 42,
+        "best_epoch": 5,
+        "macro_f1": 0.7368157906177992,
+        "Premise": 0.8869179600886917,
+        "Claim": 0.823529411764706,
+        "MajorClaim": 0.5
+      },
+      {
+        "model": "microsoft/mdeberta-v3-base",
+        "prefix": "mdeberta_v3",
+        "seed": 100,
+        "best_epoch": 7,
+        "macro_f1": 0.667932696234583,
+        "Premise": 0.8874458874458874,
+        "Claim": 0.7830188679245284,
+        "MajorClaim": 0.3333333333333333
+      },
+      {
+        "model": "microsoft/mdeberta-v3-base",
+        "prefix": "mdeberta_v3",
+        "seed": 2026,
+        "best_epoch": 4,
+        "macro_f1": 0.709144247758109,
+        "Premise": 0.8909090909090909,
+        "Claim": 0.792079207920792,
+        "MajorClaim": 0.4444444444444444
+      }
+    ]
+  },
+  {
+    "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+    "prefix": "bsc_bio_ehr",
+    "mean_macro": 0.7023608313430271,
+    "std": 0.007903385145473748,
+    "runs": [
+      {
+        "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+        "prefix": "bsc_bio_ehr",
+        "seed": 42,
+        "best_epoch": 5,
+        "macro_f1": 0.7131309531946904,
+        "Premise": 0.8914549653579678,
+        "Claim": 0.8034934497816595,
+        "MajorClaim": 0.4444444444444444
+      },
+      {
+        "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+        "prefix": "bsc_bio_ehr",
+        "seed": 100,
+        "best_epoch": 6,
+        "macro_f1": 0.6943876047324323,
+        "Premise": 0.8919540229885057,
+        "Claim": 0.8102564102564104,
+        "MajorClaim": 0.380952380952381
+      },
+      {
+        "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+        "prefix": "bsc_bio_ehr",
+        "seed": 2026,
+        "best_epoch": 9,
+        "macro_f1": 0.6995639361019584,
+        "Premise": 0.9006622516556291,
+        "Claim": 0.7980295566502463,
+        "MajorClaim": 0.4
+      }
+    ]
+  },
+  {
+    "model": "BSC-LT/MrBERT-es",
+    "prefix": "mrbert_es",
+    "mean_macro": 0.696074954092689,
+    "std": 0.020907385454617157,
+    "runs": [
+      {
+        "model": "BSC-LT/MrBERT-es",
+        "prefix": "mrbert_es",
+        "seed": 42,
+        "best_epoch": 4,
+        "macro_f1": 0.667773923181444,
+        "Premise": 0.8853932584269663,
+        "Claim": 0.8021390374331552,
+        "MajorClaim": 0.3157894736842105
+      },
+      {
+        "model": "BSC-LT/MrBERT-es",
+        "prefix": "mrbert_es",
+        "seed": 100,
+        "best_epoch": 5,
+        "macro_f1": 0.7176394352106592,
+        "Premise": 0.8665105386416861,
+        "Claim": 0.7864077669902914,
+        "MajorClaim": 0.5
+      },
+      {
+        "model": "BSC-LT/MrBERT-es",
+        "prefix": "mrbert_es",
+        "seed": 2026,
+        "best_epoch": 8,
+        "macro_f1": 0.702811503885964,
+        "Premise": 0.8986784140969163,
+        "Claim": 0.8097560975609757,
+        "MajorClaim": 0.4
+      }
+    ]
+  },
+  {
+    "model": "IIC/RigoBERTa-Clinical",
+    "prefix": "rigoberta_clinical",
+    "mean_macro": 0.6918546892491779,
+    "std": 0.025789431585205143,
+    "runs": [
+      {
+        "model": "IIC/RigoBERTa-Clinical",
+        "prefix": "rigoberta_clinical",
+        "seed": 42,
+        "best_epoch": 5,
+        "macro_f1": 0.6612972419424032,
+        "Premise": 0.8847926267281107,
+        "Claim": 0.7657657657657658,
+        "MajorClaim": 0.3333333333333333
+      },
+      {
+        "model": "IIC/RigoBERTa-Clinical",
+        "prefix": "rigoberta_clinical",
+        "seed": 100,
+        "best_epoch": 6,
+        "macro_f1": 0.6898903278305073,
+        "Premise": 0.8741092636579573,
+        "Claim": 0.766990291262136,
+        "MajorClaim": 0.42857142857142855
+      },
+      {
+        "model": "IIC/RigoBERTa-Clinical",
+        "prefix": "rigoberta_clinical",
+        "seed": 2026,
+        "best_epoch": 5,
+        "macro_f1": 0.7243764979746233,
+        "Premise": 0.8909512761020881,
+        "Claim": 0.7821782178217821,
+        "MajorClaim": 0.5
+      }
+    ]
+  },
+  {
+    "model": "BSC-LT/MrBERT-biomed",
+    "prefix": "mrbert_biomed",
+    "mean_macro": 0.6913322185992494,
+    "std": 0.030059896387803615,
+    "runs": [
+      {
+        "model": "BSC-LT/MrBERT-biomed",
+        "prefix": "mrbert_biomed",
+        "seed": 42,
+        "best_epoch": 7,
+        "macro_f1": 0.6570380085951889,
+        "Premise": 0.9016018306636154,
+        "Claim": 0.8195121951219513,
+        "MajorClaim": 0.25
+      },
+      {
+        "model": "BSC-LT/MrBERT-biomed",
+        "prefix": "mrbert_biomed",
+        "seed": 100,
+        "best_epoch": 6,
+        "macro_f1": 0.6867232571733549,
+        "Premise": 0.8904109589041095,
+        "Claim": 0.8061224489795918,
+        "MajorClaim": 0.3636363636363637
+      },
+      {
+        "model": "BSC-LT/MrBERT-biomed",
+        "prefix": "mrbert_biomed",
+        "seed": 2026,
+        "best_epoch": 4,
+        "macro_f1": 0.7302353900292046,
+        "Premise": 0.9009009009009009,
+        "Claim": 0.8453608247422681,
+        "MajorClaim": 0.4444444444444444
+      }
+    ]
+  },
+  {
+    "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+    "prefix": "roberta_clinical",
+    "mean_macro": 0.6851515509294257,
+    "std": 0.016294892123736335,
+    "runs": [
+      {
+        "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+        "prefix": "roberta_clinical",
+        "seed": 42,
+        "best_epoch": 4,
+        "macro_f1": 0.6662451806493258,
+        "Premise": 0.8977777777777779,
+        "Claim": 0.7979274611398963,
+        "MajorClaim": 0.30303030303030304
+      },
+      {
+        "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+        "prefix": "roberta_clinical",
+        "seed": 100,
+        "best_epoch": 5,
+        "macro_f1": 0.6831943401030718,
+        "Premise": 0.8873239436619719,
+        "Claim": 0.8144329896907218,
+        "MajorClaim": 0.34782608695652173
+      },
+      {
+        "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+        "prefix": "roberta_clinical",
+        "seed": 2026,
+        "best_epoch": 4,
+        "macro_f1": 0.7060151320358794,
+        "Premise": 0.8858447488584476,
+        "Claim": 0.8155339805825242,
+        "MajorClaim": 0.4166666666666667
+      }
+    ]
+  },
+  {
+    "model": "FacebookAI/xlm-roberta-large",
+    "prefix": "xlmr_large",
+    "mean_macro": 0.676953628975807,
+    "std": 0.020564559458331775,
+    "runs": [
+      {
+        "model": "FacebookAI/xlm-roberta-large",
+        "prefix": "xlmr_large",
+        "seed": 42,
+        "best_epoch": 5,
+        "macro_f1": 0.6478890655361244,
+        "Premise": 0.8828828828828829,
+        "Claim": 0.7941176470588236,
+        "MajorClaim": 0.26666666666666666
+      },
+      {
+        "model": "FacebookAI/xlm-roberta-large",
+        "prefix": "xlmr_large",
+        "seed": 100,
+        "best_epoch": 11,
+        "macro_f1": 0.690597078530169,
+        "Premise": 0.8924485125858124,
+        "Claim": 0.7793427230046949,
+        "MajorClaim": 0.39999999999999997
+      },
+      {
+        "model": "FacebookAI/xlm-roberta-large",
+        "prefix": "xlmr_large",
+        "seed": 2026,
+        "best_epoch": 8,
+        "macro_f1": 0.6923747428611277,
+        "Premise": 0.8837209302325582,
+        "Claim": 0.7586206896551725,
+        "MajorClaim": 0.43478260869565216
+      }
+    ]
+  },
+  {
+    "model": "dccuchile/bert-base-spanish-wwm-cased",
+    "prefix": "beto",
+    "mean_macro": 0.674587396583328,
+    "std": 0.007038750325296007,
+    "runs": [
+      {
+        "model": "dccuchile/bert-base-spanish-wwm-cased",
+        "prefix": "beto",
+        "seed": 42,
+        "best_epoch": 9,
+        "macro_f1": 0.6727602249051002,
+        "Premise": 0.8908296943231442,
+        "Claim": 0.7745098039215685,
+        "MajorClaim": 0.35294117647058826
+      },
+      {
+        "model": "dccuchile/bert-base-spanish-wwm-cased",
+        "prefix": "beto",
+        "seed": 100,
+        "best_epoch": 4,
+        "macro_f1": 0.6670267808697,
+        "Premise": 0.9017857142857143,
+        "Claim": 0.7835051546391752,
+        "MajorClaim": 0.3157894736842105
+      },
+      {
+        "model": "dccuchile/bert-base-spanish-wwm-cased",
+        "prefix": "beto",
+        "seed": 2026,
+        "best_epoch": 4,
+        "macro_f1": 0.6839751839751839,
+        "Premise": 0.9054054054054055,
+        "Claim": 0.7619047619047618,
+        "MajorClaim": 0.3846153846153846
+      }
+    ]
+  },
+  {
+    "model": "IIC/BETO_Galen",
+    "prefix": "beto_galen",
+    "mean_macro": 0.5676987637326905,
+    "std": 0.006870911505123442,
+    "runs": [
+      {
+        "model": "IIC/BETO_Galen",
+        "prefix": "beto_galen",
+        "seed": 42,
+        "best_epoch": 12,
+        "macro_f1": 0.5605918027300932,
+        "Premise": 0.8100686498855836,
+        "Claim": 0.6494845360824741,
+        "MajorClaim": 0.2222222222222222
+      },
+      {
+        "model": "IIC/BETO_Galen",
+        "prefix": "beto_galen",
+        "seed": 100,
+        "best_epoch": 9,
+        "macro_f1": 0.565513562647812,
+        "Premise": 0.8291571753986332,
+        "Claim": 0.6451612903225807,
+        "MajorClaim": 0.2222222222222222
+      },
+      {
+        "model": "IIC/BETO_Galen",
+        "prefix": "beto_galen",
+        "seed": 2026,
+        "best_epoch": 11,
+        "macro_f1": 0.5769909258201662,
+        "Premise": 0.8235294117647058,
+        "Claim": 0.6407766990291262,
+        "MajorClaim": 0.26666666666666666
+      }
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "id": "prekzursil/gt1-xlr-s2026",
+  "title": "gt1 xlr s2026",
+  "code_file": "xlmr_large_seed2026.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "enable_internet": true,
+  "dataset_sources": [
+    "alexcristea72/iberlef-grace"
+  ]
+}

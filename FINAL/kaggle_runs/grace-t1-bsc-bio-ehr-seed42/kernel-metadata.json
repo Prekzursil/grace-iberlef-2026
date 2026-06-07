@@ -1,0 +1,14 @@
+{
+  "id": "prekzursil/gt1-bscbioehr-s42-r2",
+  "title": "gt1 bscbioehr s42 r2",
+  "code_file": "bsc_bio_ehr_seed42.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "alexcristea72/iberlef-grace"
+  ]
+}

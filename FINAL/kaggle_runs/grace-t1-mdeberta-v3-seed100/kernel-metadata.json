@@ -1,0 +1,16 @@
+{
+  "id": "prekzursil/grace-t1-mdeberta-v3-seed100",
+  "title": "GRACE T1 mdeberta-v3 seed100",
+  "code_file": "mdeberta_v3_seed100.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "enable_internet": true,
+  "dataset_sources": [
+    "alexcristea72/iberlef-grace"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

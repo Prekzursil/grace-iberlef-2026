@@ -40,3 +40,26 @@ Thumbs.db
 
 # MCP backups (in user home, not repo, but ignore if any leak in)
 .claude.json.bak-*
+
+# === FINAL/ workspace: GRACE Modal sweep + report deliverables ===
+# Non-redistributable competition data (organizer-provided + derived merges/backups)
+FINAL/IberLEF_GRACE/
+FINAL/GRACE_2026_blind_test/
+FINAL/merged_train_dev_full_fit.json
+FINAL/archive.zip
+
+# Model checkpoints / weights (>100MB GitHub limit; regenerable via training)
+*.safetensors
+FINAL/**/checkpoint-*/
+FINAL/**/training_args.bin
+FINAL/**/optimizer.pt
+
+# Stale Kaggle run output trees (superseded by the Modal sweep; heavy artifacts)
+FINAL/kaggle_runs/outputs/
+FINAL/kaggle_runs/outputs_live/
+FINAL/kaggle_runs/outputs_final/
+
+# Transient caches/logs
+FINAL/__pycache__/
+
+# NOTE: FINAL/modal_out/*.npy logits are intentionally NOT ignored — committed for reproducibility.

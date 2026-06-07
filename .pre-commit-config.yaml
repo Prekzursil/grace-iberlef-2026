@@ -1,3 +1,9 @@
+# FINAL/ is a research + deliverables workspace: machine-generated Kaggle kernels,
+# Modal sweep scripts, and report generators with intentional Unicode typography
+# (e.g. "9 models x 3 seeds", em dashes) that ruff RUF001 would corrupt. The
+# maintained library lives in grace/, scripts/, tests/ and is still fully linted.
+exclude: '^FINAL/'
+
 repos:
   - repo: https://github.com/psf/black
     rev: 24.8.0

@@ -1,0 +1,191 @@
+[
+  {
+    "slug": "gt1-mrb-s42",
+    "model": "BSC-LT/MrBERT-biomed",
+    "seed": 42,
+    "prefix": "mrbert_biomed",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mrb-s42"
+  },
+  {
+    "slug": "gt1-mrb-s100",
+    "model": "BSC-LT/MrBERT-biomed",
+    "seed": 100,
+    "prefix": "mrbert_biomed",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mrb-s100"
+  },
+  {
+    "slug": "gt1-mrb-s2026",
+    "model": "BSC-LT/MrBERT-biomed",
+    "seed": 2026,
+    "prefix": "mrbert_biomed",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mrb-s2026"
+  },
+  {
+    "slug": "gt1-bsc-s42",
+    "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+    "seed": 42,
+    "prefix": "bsc_bio_ehr",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-bsc-s42"
+  },
+  {
+    "slug": "gt1-bsc-s100",
+    "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+    "seed": 100,
+    "prefix": "bsc_bio_ehr",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-bsc-s100"
+  },
+  {
+    "slug": "gt1-bsc-s2026",
+    "model": "PlanTL-GOB-ES/bsc-bio-ehr-es",
+    "seed": 2026,
+    "prefix": "bsc_bio_ehr",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-bsc-s2026"
+  },
+  {
+    "slug": "gt1-rob-s42",
+    "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+    "seed": 42,
+    "prefix": "roberta_clinical",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-rob-s42"
+  },
+  {
+    "slug": "gt1-rob-s100",
+    "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+    "seed": 100,
+    "prefix": "roberta_clinical",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-rob-s100"
+  },
+  {
+    "slug": "gt1-rob-s2026",
+    "model": "PlanTL-GOB-ES/roberta-base-biomedical-clinical-es",
+    "seed": 2026,
+    "prefix": "roberta_clinical",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-rob-s2026"
+  },
+  {
+    "slug": "gt1-mdb-s42",
+    "model": "microsoft/mdeberta-v3-base",
+    "seed": 42,
+    "prefix": "mdeberta_v3",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mdb-s42"
+  },
+  {
+    "slug": "gt1-mdb-s100",
+    "model": "microsoft/mdeberta-v3-base",
+    "seed": 100,
+    "prefix": "mdeberta_v3",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mdb-s100"
+  },
+  {
+    "slug": "gt1-mdb-s2026",
+    "model": "microsoft/mdeberta-v3-base",
+    "seed": 2026,
+    "prefix": "mdeberta_v3",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mdb-s2026"
+  },
+  {
+    "slug": "gt1-rig-s42",
+    "model": "IIC/RigoBERTa-Clinical",
+    "seed": 42,
+    "prefix": "rigoberta_clinical",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-rig-s42"
+  },
+  {
+    "slug": "gt1-rig-s100",
+    "model": "IIC/RigoBERTa-Clinical",
+    "seed": 100,
+    "prefix": "rigoberta_clinical",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-rig-s100"
+  },
+  {
+    "slug": "gt1-rig-s2026",
+    "model": "IIC/RigoBERTa-Clinical",
+    "seed": 2026,
+    "prefix": "rigoberta_clinical",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-rig-s2026"
+  },
+  {
+    "slug": "gt1-mre-s42",
+    "model": "BSC-LT/MrBERT-es",
+    "seed": 42,
+    "prefix": "mrbert_es",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mre-s42"
+  },
+  {
+    "slug": "gt1-mre-s100",
+    "model": "BSC-LT/MrBERT-es",
+    "seed": 100,
+    "prefix": "mrbert_es",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mre-s100"
+  },
+  {
+    "slug": "gt1-mre-s2026",
+    "model": "BSC-LT/MrBERT-es",
+    "seed": 2026,
+    "prefix": "mrbert_es",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-mre-s2026"
+  },
+  {
+    "slug": "gt1-xlr-s42",
+    "model": "FacebookAI/xlm-roberta-large",
+    "seed": 42,
+    "prefix": "xlmr_large",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-xlr-s42"
+  },
+  {
+    "slug": "gt1-xlr-s100",
+    "model": "FacebookAI/xlm-roberta-large",
+    "seed": 100,
+    "prefix": "xlmr_large",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-xlr-s100"
+  },
+  {
+    "slug": "gt1-xlr-s2026",
+    "model": "FacebookAI/xlm-roberta-large",
+    "seed": 2026,
+    "prefix": "xlmr_large",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-xlr-s2026"
+  },
+  {
+    "slug": "gt1-bet-s42",
+    "model": "dccuchile/bert-base-spanish-wwm-cased",
+    "seed": 42,
+    "prefix": "beto",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-bet-s42"
+  },
+  {
+    "slug": "gt1-bet-s100",
+    "model": "dccuchile/bert-base-spanish-wwm-cased",
+    "seed": 100,
+    "prefix": "beto",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-bet-s100"
+  },
+  {
+    "slug": "gt1-bet-s2026",
+    "model": "dccuchile/bert-base-spanish-wwm-cased",
+    "seed": 2026,
+    "prefix": "beto",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-bet-s2026"
+  },
+  {
+    "slug": "gt1-gal-s42",
+    "model": "IIC/BETO_Galen",
+    "seed": 42,
+    "prefix": "beto_galen",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-gal-s42"
+  },
+  {
+    "slug": "gt1-gal-s100",
+    "model": "IIC/BETO_Galen",
+    "seed": 100,
+    "prefix": "beto_galen",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-gal-s100"
+  },
+  {
+    "slug": "gt1-gal-s2026",
+    "model": "IIC/BETO_Galen",
+    "seed": 2026,
+    "prefix": "beto_galen",
+    "dir": "C:\\Users\\Prekzursil\\Downloads\\bionlp\\FINAL\\kaggle_runs\\gt1-gal-s2026"
+  }
+]

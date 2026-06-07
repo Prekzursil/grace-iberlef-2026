@@ -1,0 +1,238 @@
+{
+  "per_seed_f1": {
+    "mrbert_biomed_s42": 0.6570380085951889,
+    "mrbert_biomed_s100": 0.6867232571733549,
+    "mrbert_biomed_s2026": 0.7302353900292046,
+    "bsc_bio_ehr_s42": 0.7131309531946904,
+    "bsc_bio_ehr_s100": 0.6943876047324323,
+    "bsc_bio_ehr_s2026": 0.6995639361019584,
+    "roberta_clinical_s42": 0.6662451806493258,
+    "roberta_clinical_s100": 0.6831943401030718,
+    "roberta_clinical_s2026": 0.7060151320358794,
+    "mdeberta_v3_s42": 0.7368157906177992,
+    "mdeberta_v3_s100": 0.667932696234583,
+    "mdeberta_v3_s2026": 0.709144247758109,
+    "rigoberta_clinical_s42": 0.6612972419424032,
+    "rigoberta_clinical_s100": 0.6898903278305073,
+    "rigoberta_clinical_s2026": 0.7243764979746233,
+    "mrbert_es_s42": 0.667773923181444,
+    "mrbert_es_s100": 0.7176394352106592,
+    "mrbert_es_s2026": 0.702811503885964,
+    "xlmr_large_s42": 0.6478890655361244,
+    "xlmr_large_s100": 0.690597078530169,
+    "xlmr_large_s2026": 0.6923747428611277,
+    "beto_s42": 0.6727602249051002,
+    "beto_s100": 0.6670267808697,
+    "beto_s2026": 0.6839751839751839,
+    "beto_galen_s42": 0.5605918027300932,
+    "beto_galen_s100": 0.565513562647812,
+    "beto_galen_s2026": 0.5769909258201662
+  },
+  "per_model_mean": {
+    "mrbert_biomed": 0.6913322185992494,
+    "bsc_bio_ehr": 0.7023608313430271,
+    "roberta_clinical": 0.6851515509294256,
+    "mdeberta_v3": 0.7046309115368303,
+    "rigoberta_clinical": 0.6918546892491779,
+    "mrbert_es": 0.6960749540926892,
+    "xlmr_large": 0.676953628975807,
+    "beto": 0.6745873965833281,
+    "beto_galen": 0.5676987637326905
+  },
+  "dev_scores": {
+    "greedy": {
+      "members": [
+        "bsc_bio_ehr",
+        "mrbert_es",
+        "mdeberta_v3",
+        "xlmr_large"
+      ],
+      "dev_macro_f1": 0.7426479609142147,
+      "official_score": 0.7426,
+      "strict_macro": {
+        "f1": 0.7426,
+        "precision": 0.7487,
+        "recall": 0.7435
+      },
+      "relaxed_macro": {
+        "f1": 0.7426,
+        "precision": 0.7487,
+        "recall": 0.7435
+      },
+      "strict_per_type": {
+        "Claim": {
+          "f1": 0.823,
+          "precision": 0.7818,
+          "recall": 0.8687,
+          "tp": 86,
+          "fp": 24,
+          "fn": 13
+        },
+        "MajorClaim": {
+          "f1": 0.5,
+          "precision": 0.5714,
+          "recall": 0.4444,
+          "tp": 4,
+          "fp": 3,
+          "fn": 5
+        },
+        "Premise": {
+          "f1": 0.905,
+          "precision": 0.8929,
+          "recall": 0.9174,
+          "tp": 200,
+          "fp": 24,
+          "fn": 18
+        }
+      }
+    },
+    "top3": {
+      "members": [
+        "mdeberta_v3",
+        "bsc_bio_ehr",
+        "mrbert_es"
+      ],
+      "dev_macro_f1": 0.7416249010815088,
+      "official_score": 0.7416,
+      "strict_macro": {
+        "f1": 0.7416,
+        "precision": 0.751,
+        "recall": 0.7383
+      },
+      "relaxed_macro": {
+        "f1": 0.7416,
+        "precision": 0.751,
+        "recall": 0.7383
+      },
+      "strict_per_type": {
+        "Claim": {
+          "f1": 0.8235,
+          "precision": 0.8,
+          "recall": 0.8485,
+          "tp": 84,
+          "fp": 21,
+          "fn": 15
+        },
+        "MajorClaim": {
+          "f1": 0.5,
+          "precision": 0.5714,
+          "recall": 0.4444,
+          "tp": 4,
+          "fp": 3,
+          "fn": 5
+        },
+        "Premise": {
+          "f1": 0.9013,
+          "precision": 0.8816,
+          "recall": 0.922,
+          "tp": 201,
+          "fp": 27,
+          "fn": 17
+        }
+      }
+    },
+    "all9": {
+      "members": [
+        "mrbert_biomed",
+        "bsc_bio_ehr",
+        "roberta_clinical",
+        "mdeberta_v3",
+        "rigoberta_clinical",
+        "mrbert_es",
+        "xlmr_large",
+        "beto",
+        "beto_galen"
+      ],
+      "dev_macro_f1": 0.7433634992458522,
+      "official_score": 0.7434,
+      "strict_macro": {
+        "f1": 0.7434,
+        "precision": 0.7463,
+        "recall": 0.7417
+      },
+      "relaxed_macro": {
+        "f1": 0.7434,
+        "precision": 0.7463,
+        "recall": 0.7417
+      },
+      "strict_per_type": {
+        "Claim": {
+          "f1": 0.85,
+          "precision": 0.8416,
+          "recall": 0.8586,
+          "tp": 85,
+          "fp": 16,
+          "fn": 14
+        },
+        "MajorClaim": {
+          "f1": 0.4706,
+          "precision": 0.5,
+          "recall": 0.4444,
+          "tp": 4,
+          "fp": 4,
+          "fn": 5
+        },
+        "Premise": {
+          "f1": 0.9095,
+          "precision": 0.8973,
+          "recall": 0.922,
+          "tp": 201,
+          "fp": 23,
+          "fn": 17
+        }
+      }
+    }
+  },
+  "blind": {
+    "greedy": {
+      "docs": 2474,
+      "entities": 11758,
+      "by_type": {
+        "Premise": 7890,
+        "Claim": 3705,
+        "MajorClaim": 163
+      },
+      "offset_mismatches": 0,
+      "file": "blind_submission_greedy.json",
+      "offset_mismatches_raw": 136
+    },
+    "top3": {
+      "docs": 2474,
+      "entities": 11711,
+      "by_type": {
+        "Premise": 7894,
+        "Claim": 3666,
+        "MajorClaim": 151
+      },
+      "offset_mismatches": 0,
+      "file": "blind_submission_top3.json",
+      "offset_mismatches_raw": 133
+    },
+    "all9": {
+      "docs": 2474,
+      "entities": 11752,
+      "by_type": {
+        "Claim": 3717,
+        "Premise": 7872,
+        "MajorClaim": 163
+      },
+      "offset_mismatches": 0,
+      "file": "blind_submission_all9.json",
+      "offset_mismatches_raw": 135
+    }
+  },
+  "n_blind_sentences": 26640,
+  "pretty": {
+    "mrbert_biomed": "MrBERT-biomed",
+    "bsc_bio_ehr": "bsc-bio-ehr-es",
+    "roberta_clinical": "roberta-clinical-es",
+    "mdeberta_v3": "mdeberta-v3-base",
+    "rigoberta_clinical": "RigoBERTa-Clinical",
+    "mrbert_es": "MrBERT-es",
+    "xlmr_large": "xlm-roberta-large",
+    "beto": "BETO",
+    "beto_galen": "BETO_Galen"
+  },
+  "n_dev_sentences": 705,
+  "blind_offset_note": "spaCy trailing-whitespace offsets trimmed post-hoc; final submissions have 0 mismatches (predictions unchanged)."
+}

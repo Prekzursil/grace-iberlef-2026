@@ -1,0 +1,16 @@
+{
+  "id": "prekzursil/gt1-robclin-s42",
+  "title": "gt1 robclin s42",
+  "code_file": "roberta_clinical_seed42.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "enable_internet": true,
+  "dataset_sources": [
+    "alexcristea72/iberlef-grace"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}
