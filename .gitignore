@@ -12,6 +12,8 @@ __pycache__/
 *.egg-info/
 .mypy_cache/
 .ruff_cache/
+.coverage
+.coverage.*
 build/
 dist/
 
@@ -40,6 +42,9 @@ Thumbs.db
 
 # MCP backups (in user home, not repo, but ignore if any leak in)
 .claude.json.bak-*
+
+# Local session state (handoff buffers, not repo content)
+.remember/
 
 # === FINAL/ workspace: GRACE Modal sweep + report deliverables ===
 # Non-redistributable competition data (organizer-provided + derived merges/backups)

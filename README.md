@@ -2,6 +2,15 @@
 
 Dedicated workspace for biomedical/scientific research using [ToolUniverse](https://github.com/mims-harvard/ToolUniverse) from Harvard Mims/Zitnik Lab.
 
+## Projects in this workspace
+
+This repo also hosts **GRACE @ IberLEF 2026** (Spanish clinical argument mining, Track 1: evidence component detection). Two distinct code areas — kept deliberately separate (no shared imports):
+
+- **`grace/` + `tests/` + `configs/`** — the GRACE *reference library*: token-level BIO encoder, coverage-gated (`.coverage-thresholds.json`). Frozen reference implementation.
+- **`FINAL/`** — the **canonical competition submission**: a sentence-level 4-class pipeline run as a 27-cell [Modal](https://modal.com) sweep (9 models × 3 seeds), softmax-probability ensemble (all-9 dev strict macro-F1 = 0.743), the blind-test submission (`FINAL/report_out/GRACE_track1_submission.json`), and the full report (`FINAL/report/` → PPTX / DOCX / PDF + figures). Start at [`FINAL/report/README.md`](FINAL/report/README.md).
+
+The live results come from `FINAL/`; `grace/` is the earlier, separately-tested reference implementation.
+
 ## Layout
 
 - `.venv/` — pinned Python 3.12 venv (gitignored)
