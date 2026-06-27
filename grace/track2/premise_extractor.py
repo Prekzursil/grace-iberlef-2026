@@ -96,7 +96,9 @@ class PremiseExtractor:
                 case.raw_text, abs_start, abs_end
             )
 
-            if abs_start >= abs_end:
+            if abs_start >= abs_end:  # pragma: no cover
+                # Defensive: snap_to_token_boundary never inverts a non-empty,
+                # already-matched span, so this guard is not reachable in practice.
                 continue
 
             counter += 1
@@ -106,7 +108,7 @@ class PremiseExtractor:
                     text=case.raw_text[abs_start:abs_end],
                     start=abs_start,
                     end=abs_end,
-                    type=cast(Any, "Premise"),
+                    type=cast("Any", "Premise"),
                 )
             )
 

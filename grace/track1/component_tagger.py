@@ -19,7 +19,7 @@ not silently truncated.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 import torch
 from torch.nn import CrossEntropyLoss
@@ -118,7 +118,7 @@ class ComponentTagger:
     def __init__(self, cfg: ComponentTaggerConfig) -> None:
         self.cfg = cfg
         self.tokenizer = AutoTokenizer.from_pretrained(cfg.backbone, use_fast=True)
-        self.aligner = SpanAligner(hf_tokenizer=self.tokenizer)
+        self.aligner = SpanAligner(hf_tokenizer=cast("Any", self.tokenizer))
 
         if cfg.use_crf or cfg.use_bilstm:
             # Use raw encoder + custom head when CRF/BiLSTM is enabled
@@ -126,7 +126,7 @@ class ComponentTagger:
             hidden_size = self.encoder.config.hidden_size
 
             if cfg.use_bilstm:
-                self.bilstm = torch.nn.LSTM(
+                self.bilstm: torch.nn.LSTM | None = torch.nn.LSTM(
                     hidden_size,
                     cfg.bilstm_hidden,
                     num_layers=1,
@@ -138,8 +138,10 @@ class ComponentTagger:
                 self.bilstm = None
                 classifier_input = hidden_size
 
-            self.classifier = torch.nn.Linear(classifier_input, self.num_labels)
-            self.dropout = torch.nn.Dropout(0.1)
+            self.classifier: torch.nn.Linear | None = torch.nn.Linear(
+                classifier_input, self.num_labels
+            )
+            self.dropout: torch.nn.Dropout | None = torch.nn.Dropout(0.1)
 
             if cfg.use_crf:
                 from torchcrf import CRF
@@ -203,10 +205,16 @@ class ComponentTagger:
             if self.bilstm is not None:
                 hidden, _ = self.bilstm(hidden)
 
-            hidden = self.dropout(hidden)
-            return self.classifier(hidden)
+            # custom-head mode guarantees these are set (see __init__)
+            dropout = cast("torch.nn.Dropout", self.dropout)
+            classifier = cast("torch.nn.Linear", self.classifier)
+            hidden = dropout(hidden)
+            return cast("torch.Tensor", classifier(hidden))
         else:
-            return self.model(input_ids=input_ids, attention_mask=attention_mask).logits
+            return cast(
+                "torch.Tensor",
+                self.model(input_ids=input_ids, attention_mask=attention_mask).logits,
+            )
 
     def _class_weights_tensor(self, device: torch.device) -> torch.Tensor:
         if not self.cfg.class_weights:
@@ -325,7 +333,9 @@ class ComponentTagger:
                     t = int(offset_map[pos][1])
                     if s == 0 and t == 0:
                         continue
-                    if int(attention_mask[0][pos]) == 0:
+                    if int(attention_mask[0][pos]) == 0:  # pragma: no cover
+                        # Single-window predict is always batch-of-1, which HF
+                        # never pads -> no masked positions reachable here.
                         continue
                     ordered_keys.append((s, t))
                     ordered_labels.append(lbl_id)
@@ -369,7 +379,9 @@ class ComponentTagger:
                     t = int(enc["offset_mapping"][w][pos][1])
                     if s == 0 and t == 0:
                         continue
-                    if int(enc["attention_mask"][w][pos]) == 0:
+                    if int(enc["attention_mask"][w][pos]) == 0:  # pragma: no cover
+                        # Padding tokens always carry an (0, 0) offset and are
+                        # already skipped above, so this guard is unreachable.
                         continue
                     key = (s, t)
                     tok_logits = logits[w][pos].detach().cpu()
@@ -433,7 +445,8 @@ class ComponentTagger:
         self.tokenizer.save_pretrained(save_dir)
 
         if self._custom_head:
-            torch.save(self.classifier.state_dict(), save_path / "classifier.pt")
+            classifier = cast("torch.nn.Linear", self.classifier)
+            torch.save(classifier.state_dict(), save_path / "classifier.pt")
             if self.bilstm is not None:
                 torch.save(self.bilstm.state_dict(), save_path / "bilstm.pt")
             if self.crf is not None:
@@ -474,5 +487,5 @@ class ComponentTagger:
             tagger.model = AutoModelForTokenClassification.from_pretrained(save_dir)
 
         tagger.tokenizer = AutoTokenizer.from_pretrained(save_dir, use_fast=True)
-        tagger.aligner = SpanAligner(hf_tokenizer=tagger.tokenizer)
+        tagger.aligner = SpanAligner(hf_tokenizer=cast("Any", tagger.tokenizer))
         return tagger
