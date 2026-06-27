@@ -1,0 +1,8 @@
+name: "CodeQL config"
+
+# Scan only the maintained library + its tests. Research/deliverable trees
+# (FINAL/, scripts/, notebooks/, experiments/) are machine-generated or one-off
+# and are already excluded from the lint surface (see .pre-commit-config.yaml).
+paths:
+  - grace
+  - tests
