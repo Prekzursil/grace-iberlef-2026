@@ -94,4 +94,6 @@ jobs:
             https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64 \
             -o /usr/local/bin/osv-scanner
           chmod +x /usr/local/bin/osv-scanner
-          osv-scanner scan --lockfile="requirements.txt:requirements.lock"
+          # --no-resolve: the lockfile is already fully resolved by uv, so skip
+          # osv's transitive deps.dev resolution (its RPC errors out -> exit 127).
+          osv-scanner scan --no-resolve --lockfile="requirements.txt:requirements.lock"
