@@ -38,12 +38,6 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Set up Go (for osv-scanner)
-        uses: actions/setup-go@v5
-        with:
-          go-version: stable
-          cache: false
-
       - name: Cache Hugging Face models
         uses: actions/cache@v4
         with:
@@ -96,5 +90,8 @@ jobs:
       # ── Gate 6: deps ───────────────────────────────────────────────────
       - name: Deps (osv-scanner)
         run: |
-          go install github.com/google/osv-scanner/v2/cmd/osv-scanner@latest
-          "$(go env GOPATH)/bin/osv-scanner" scan --lockfile="requirements.txt:requirements.lock"
+          curl -sSfL \
+            https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64 \
+            -o /usr/local/bin/osv-scanner
+          chmod +x /usr/local/bin/osv-scanner
+          osv-scanner scan --lockfile="requirements.txt:requirements.lock"
