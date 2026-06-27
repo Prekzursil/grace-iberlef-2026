@@ -100,7 +100,7 @@ def load_track1(path: Path) -> tuple[GraceCase, ...]:
                 text=e["text"],
                 start=int(e["start"]),
                 end=int(e["end"]),
-                type=cast(Any, e["type"]),
+                type=cast("Any", e["type"]),
             )
             for e in ents_raw
         )
@@ -112,7 +112,7 @@ def load_track1(path: Path) -> tuple[GraceCase, ...]:
                 id=str(r["id"]),
                 arg1_id=str(r["arg1_id"]),
                 arg2_id=str(r["arg2_id"]),
-                relation_type=cast(Any, r["relation_type"]),
+                relation_type=cast("Any", r["relation_type"]),
             )
             for r in rels_raw
         )
@@ -176,7 +176,7 @@ def load_track2(path: Path) -> tuple[GraceCase, ...]:
                 f"case {case_id}: annotations must be a dict, got {type(ann).__name__}"
             )
 
-        relevancy = tuple(cast(Any, lbl) for lbl in ann.get("sentence_relevancy", []))
+        relevancy = tuple(cast("Any", lbl) for lbl in ann.get("sentence_relevancy", []))
         if len(relevancy) != len(sentences):
             raise GraceLoadError(
                 f"case {case_id}: sentence_relevancy length {len(relevancy)} != "
@@ -189,7 +189,7 @@ def load_track2(path: Path) -> tuple[GraceCase, ...]:
                 text=e["text"],
                 start=int(e["start"]),
                 end=int(e["end"]),
-                type=cast(Any, e["type"]),
+                type=cast("Any", e["type"]),
             )
             for e in ann.get("entities", [])
         )
@@ -201,7 +201,7 @@ def load_track2(path: Path) -> tuple[GraceCase, ...]:
                 id=str(r["id"]),
                 arg1_id=str(r["arg1_id"]),
                 arg2_id=str(r["arg2_id"]),
-                relation_type=cast(Any, r["relation_type"]),
+                relation_type=cast("Any", r["relation_type"]),
             )
             for r in ann.get("relations", [])
         )

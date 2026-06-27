@@ -14,13 +14,13 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 import torch
 from torch.nn import BCEWithLogitsLoss
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from grace.io.schema import GraceCase
+from grace.io.schema import GraceCase, SentRelevancy
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -52,7 +52,7 @@ class SentenceClassifier:
         self,
         case: GraceCase,
         sentence_idx: int,
-    ) -> dict:
+    ) -> dict[str, Any]:
         """Encode one sentence with optional correct-option conditioning."""
         sentence = case.context_sentences[sentence_idx]
 
@@ -69,12 +69,15 @@ class SentenceClassifier:
             text_a = sentence.sentence
             text_b = None
 
-        return self.tokenizer(
-            text_a,
-            text_b,
-            truncation=True,
-            max_length=self.cfg.max_length,
-            return_tensors="pt",
+        return cast(
+            "dict[str, Any]",
+            self.tokenizer(
+                text_a,
+                text_b,
+                truncation=True,
+                max_length=self.cfg.max_length,
+                return_tensors="pt",
+            ),
         )
 
     def train_step(
@@ -116,7 +119,7 @@ class SentenceClassifier:
         out: list[GraceCase] = []
 
         for case in cases:
-            labels: list[str] = []
+            labels: list[SentRelevancy] = []
             for i in range(len(case.context_sentences)):
                 enc = self._encode_sentence(case, i)
                 logits = self.model(**enc).logits  # [1, 1]

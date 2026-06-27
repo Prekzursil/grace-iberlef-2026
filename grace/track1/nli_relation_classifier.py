@@ -22,7 +22,7 @@ from __future__ import annotations
 import logging
 import random
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import torch
 from torch.nn import CrossEntropyLoss
@@ -112,13 +112,16 @@ class NLIRelationClassifier:
             p, h = self._format_premise_hypothesis(raw_text, e1_text, e1_type, e2_text, e2_type)
             premises.append(p)
             hypotheses.append(h)
-        return self.tokenizer(
-            premises,
-            hypotheses,
-            truncation=True,
-            max_length=self.cfg.max_length,
-            padding=True,
-            return_tensors="pt",
+        return cast(
+            "dict[str, torch.Tensor]",
+            self.tokenizer(
+                premises,
+                hypotheses,
+                truncation=True,
+                max_length=self.cfg.max_length,
+                padding=True,
+                return_tensors="pt",
+            ),
         )
 
     def _nli_class_weights(self, device: torch.device) -> torch.Tensor:

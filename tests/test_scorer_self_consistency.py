@@ -11,7 +11,18 @@ import json
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from grace.io.loaders import load_track1, load_track2, save_predictions
+from tests.conftest import HAS_ORGANIZER_DATA
+
+# These tests validate wire-compatibility against the REAL organizer scoring
+# programs, which are non-redistributable (gitignored under downloaded_data/).
+# They run only on a maintainer box that has the organizer data; CI skips them.
+pytestmark = pytest.mark.skipif(
+    not HAS_ORGANIZER_DATA,
+    reason="organizer scoring programs / data absent (non-redistributable)",
+)
 
 _SCORER_T1 = (
     Path("downloaded_data")

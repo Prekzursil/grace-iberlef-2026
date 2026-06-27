@@ -20,7 +20,7 @@ from __future__ import annotations
 import logging
 import random
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import torch
 from torch.nn import CrossEntropyLoss
@@ -75,12 +75,15 @@ class RelationClassifier:
         """Encode a component pair with typed markers."""
         left = f"<{e1_type.lower()}> {e1_text} </{e1_type.lower()}>"
         right = f"<{e2_type.lower()}> {e2_text} </{e2_type.lower()}>"
-        return self.tokenizer(
-            raw_text + " " + left,
-            right,
-            truncation=True,
-            max_length=self.cfg.max_length,
-            return_tensors="pt",
+        return cast(
+            "dict[str, Any]",
+            self.tokenizer(
+                raw_text + " " + left,
+                right,
+                truncation=True,
+                max_length=self.cfg.max_length,
+                return_tensors="pt",
+            ),
         )
 
     def _encode_pairs_batched(
@@ -102,13 +105,16 @@ class RelationClassifier:
             right = f"<{e2_type.lower()}> {e2_text} </{e2_type.lower()}>"
             texts_a.append(raw_text + " " + left)
             texts_b.append(right)
-        return self.tokenizer(
-            texts_a,
-            texts_b,
-            truncation=True,
-            max_length=self.cfg.max_length,
-            padding=True,
-            return_tensors="pt",
+        return cast(
+            "dict[str, torch.Tensor]",
+            self.tokenizer(
+                texts_a,
+                texts_b,
+                truncation=True,
+                max_length=self.cfg.max_length,
+                padding=True,
+                return_tensors="pt",
+            ),
         )
 
     def _pair_label(

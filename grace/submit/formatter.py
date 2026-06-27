@@ -9,7 +9,7 @@ Two functions:
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from grace.io.loaders import save_predictions
 
@@ -40,13 +40,13 @@ def format_predictions(
     ``annotations`` from the gold file (passed as ``gold_path``). This
     is the function to use for real evaluation, NOT ``format_submission``.
     """
-    payload: list[dict] = []
+    payload: list[dict[str, Any]] = []
     for case in pred_cases:
-        entry: dict = {
+        entry: dict[str, Any] = {
             "id": case.id,
             "raw_text": case.raw_text,
         }
-        preds_block: dict = {
+        preds_block: dict[str, Any] = {
             "entities": [
                 {
                     "id": e.id,

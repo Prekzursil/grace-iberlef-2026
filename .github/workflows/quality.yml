@@ -1,0 +1,100 @@
+name: quality
+
+# Lean quality gate (single required check). Six gates, real fixes only:
+#  1. lint + format (ruff + black)
+#  2. types (mypy)
+#  3. tests + STRICT 100% line+branch coverage (pytest --cov-fail-under=100)
+#  4. SAST (Semgrep CE)
+#  5. secrets (gitleaks; push-protection is enabled at the repo level)
+#  6. deps (osv-scanner; Dependabot configured in .github/dependabot.yml)
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gitleaks scans full history
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Go (for osv-scanner)
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Cache Hugging Face models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ runner.os }}-smoke-backbones-v1
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+          uv pip install -e ".[dev]"
+          uv pip install "semgrep>=1.90"
+
+      # ── Gate 1: lint + format ──────────────────────────────────────────
+      - name: Lint (ruff)
+        run: uv run ruff check grace tests scripts
+
+      - name: Format (black --check)
+        run: uv run black --check grace tests
+
+      # ── Gate 2: types ──────────────────────────────────────────────────
+      - name: Types (mypy)
+        run: uv run mypy grace
+
+      # ── Gate 3: tests + STRICT 100% line+branch coverage ───────────────
+      - name: Tests + 100% coverage
+        env:
+          HF_HUB_DISABLE_PROGRESS_BARS: "1"
+          TRANSFORMERS_VERBOSITY: error
+        run: >-
+          uv run pytest
+          --cov=grace --cov-branch --cov-report=term-missing
+          --cov-fail-under=100
+
+      # ── Gate 4: SAST ───────────────────────────────────────────────────
+      - name: SAST (Semgrep CE)
+        env:
+          SEMGREP_SEND_METRICS: "off"
+        run: >-
+          uv run semgrep scan --error --quiet
+          --config=p/python --config=p/security-audit
+          grace scripts
+
+      # ── Gate 5: secrets ────────────────────────────────────────────────
+      - name: Secrets (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Gate 6: deps ───────────────────────────────────────────────────
+      - name: Install osv-scanner
+        run: go install github.com/google/osv-scanner/v2/cmd/osv-scanner@latest
+
+      - name: Deps (osv-scanner)
+        run: osv-scanner scan --lockfile="requirements.txt:requirements.lock"

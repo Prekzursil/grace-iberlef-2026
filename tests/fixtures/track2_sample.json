@@ -1,0 +1,73 @@
+[
+  {
+    "id": "t2c1",
+    "raw_text": "El paciente presenta fiebre alta. La radiografia muestra un infiltrado. No hay antecedentes relevantes.",
+    "metadata": {
+      "context": "El paciente presenta fiebre alta. La radiografia muestra un infiltrado. No hay antecedentes relevantes.",
+      "context_sentences": [
+        {
+          "sentence": "El paciente presenta fiebre alta.",
+          "start": 0,
+          "end": 33
+        },
+        {
+          "sentence": "La radiografia muestra un infiltrado.",
+          "start": 34,
+          "end": 71
+        },
+        {
+          "sentence": "No hay antecedentes relevantes.",
+          "start": 72,
+          "end": 103
+        }
+      ],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Neumonia",
+          "start": 0,
+          "end": 0
+        },
+        {
+          "id": "B",
+          "text": "Gripe",
+          "start": 0,
+          "end": 0
+        }
+      ],
+      "correct_choice_id": "A"
+    },
+    "annotations": {
+      "sentence_relevancy": [
+        "relevant",
+        "relevant",
+        "not-relevant"
+      ],
+      "entities": [
+        {
+          "id": "T1",
+          "text": "fiebre alta",
+          "start": 21,
+          "end": 32,
+          "type": "Premise"
+        }
+      ],
+      "relations": []
+    }
+  },
+  {
+    "id": "t2c2",
+    "raw_text": "Otro caso clinico breve.",
+    "metadata": {
+      "context": null,
+      "context_sentences": [],
+      "choices": [],
+      "correct_choice_id": null
+    },
+    "annotations": {
+      "sentence_relevancy": [],
+      "entities": [],
+      "relations": []
+    }
+  }
+]
