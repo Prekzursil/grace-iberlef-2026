@@ -1,0 +1,83 @@
+[
+  {
+    "id": "t1c1",
+    "raw_text": "El cancer de mama es una enfermedad grave. El cribado reduce la mortalidad. Los efectos secundarios son leves.",
+    "metadata": {},
+    "annotations": {
+      "entities": [
+        {
+          "id": "T1",
+          "text": "El cancer de mama es una enfermedad grave",
+          "start": 0,
+          "end": 41,
+          "type": "Premise"
+        },
+        {
+          "id": "T2",
+          "text": "El cribado reduce la mortalidad",
+          "start": 43,
+          "end": 74,
+          "type": "MajorClaim"
+        },
+        {
+          "id": "T3",
+          "text": "Los efectos secundarios son leves",
+          "start": 76,
+          "end": 109,
+          "type": "Claim"
+        }
+      ],
+      "relations": [
+        {
+          "id": "R1",
+          "arg1_id": "T1",
+          "arg2_id": "T2",
+          "relation_type": "Support"
+        },
+        {
+          "id": "R2",
+          "arg1_id": "T3",
+          "arg2_id": "T2",
+          "relation_type": "Attack"
+        },
+        {
+          "id": "R3",
+          "arg1_id": "T9",
+          "arg2_id": "T2",
+          "relation_type": "Partial-Attack"
+        }
+      ]
+    }
+  },
+  {
+    "id": "t1c2",
+    "raw_text": "La quimioterapia es eficaz. Sin embargo, algunos estudios la cuestionan.",
+    "metadata": {},
+    "annotations": {
+      "entities": [
+        {
+          "id": "T1",
+          "text": "La quimioterapia es eficaz",
+          "start": 0,
+          "end": 26,
+          "type": "Claim"
+        },
+        {
+          "id": "T2",
+          "text": "algunos estudios la cuestionan",
+          "start": 41,
+          "end": 71,
+          "type": "Premise"
+        }
+      ],
+      "relations": [
+        {
+          "id": "R1",
+          "arg1_id": "T2",
+          "arg2_id": "T1",
+          "relation_type": "Partial-Attack"
+        }
+      ]
+    }
+  }
+]

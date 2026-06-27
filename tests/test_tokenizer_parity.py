@@ -8,7 +8,18 @@ F1 numbers will silently disagree with Codabench.
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 from grace.io.tokenizer import OfficialTokenizer
+from tests.conftest import HAS_ORGANIZER_DATA
+
+# Parity is checked against the REAL organizer scoring program (non-redistributable).
+# Our OfficialTokenizer is exhaustively unit-tested in test_tokenizer.py; this
+# cross-check runs only where the organizer program is present.
+pytestmark = pytest.mark.skipif(
+    not HAS_ORGANIZER_DATA,
+    reason="organizer scoring program absent (non-redistributable)",
+)
 
 _SCORER_PATH = (
     Path("downloaded_data")
