@@ -32,7 +32,6 @@ dependencies = [
 dev = [
   "pytest>=8.3",
   "pytest-cov>=5.0",
-  "black>=24.8",
   "ruff>=0.6",
   "mypy>=1.11",
   "jupyter>=1.0",
@@ -47,13 +46,14 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["grace*"]
 
-[tool.black]
-line-length = 100
-target-version = ["py312"]
-
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# FINAL/ is the frozen record of the submitted runs (machine-generated Kaggle
+# kernels, Modal sweep scripts, report generators with intentional Unicode
+# typography); see .pre-commit-config.yaml. The maintained code is grace/,
+# scripts/ and tests/, which stay fully linted.
+extend-exclude = ["FINAL"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "B", "S", "C4", "SIM", "TCH", "RUF"]
@@ -71,6 +71,18 @@ strict = true
 [[tool.mypy.overrides]]
 module = "grace.eval.*"
 strict = true
+
+[tool.basedpyright]
+# QZP lean gate, gate 2. Same scope as the lint: the library and its scripts
+# (FINAL/ is the frozen submission record; the tests run in gate 3).
+typeCheckingMode = "standard"
+pythonVersion = "3.12"
+include = ["grace", "scripts"]
+
+[tool.coverage.run]
+# the lean gate runs pytest --cov --cov-branch --cov-fail-under=100
+source = ["grace"]
+branch = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
