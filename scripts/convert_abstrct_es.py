@@ -30,6 +30,8 @@ def convert_abstrct_es(output: Path, split: str = "train") -> None:
     skipped = 0
 
     for idx, item in enumerate(ds):
+        if not isinstance(item, dict):
+            raise TypeError(f"row {idx}: expected a mapping, got {type(item).__name__}")
         case_id = f"abstrct_es_{split}_{idx}"
         raw_text = item.get("text", "")
         if not raw_text:

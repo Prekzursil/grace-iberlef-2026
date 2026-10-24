@@ -28,6 +28,9 @@ certifi==2026.10.23
     # via
     #   httpcore
     #   httpx
+    #   requests
+charset-normalizer==3.5.2
+    # via requests
 click==8.5.0
     # via
     #   huggingface-hub
@@ -97,6 +100,7 @@ idna==3.18
     #   anyio
     #   httpx
     #   httpx2
+    #   requests
     #   yarl
 jinja2==3.1.6
     # via torch
@@ -228,6 +232,8 @@ rapidfuzz==3.14.5
     # via levenshtein
 regex==2026.5.9
     # via transformers
+requests==2.34.2
+    # via grace-iberlef-2026 (pyproject.toml)
 rich==14.3.3
     # via
     #   grace-iberlef-2026 (pyproject.toml)
@@ -300,6 +306,8 @@ typing-inspection==0.4.2
     # via pydantic
 tzdata==2026.1 ; sys_platform == 'emscripten' or sys_platform == 'win32'
     # via pandas
+urllib3==2.8.0
+    # via requests
 xxhash==3.7.1
     # via datasets
 yarl==1.25.1

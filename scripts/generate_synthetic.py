@@ -23,6 +23,7 @@ import time
 from pathlib import Path
 
 import anthropic
+from anthropic.types import TextBlock
 
 from grace.io.loaders import load_track1
 
@@ -213,7 +214,10 @@ def generate_batch(
                 max_tokens=2000,
                 messages=[{"role": "user", "content": prompt}],
             )
-            content = response.content[0].text
+            block = response.content[0]
+            if not isinstance(block, TextBlock):
+                raise TypeError(f"expected a text block, got {block.type}")
+            content = block.text
 
             # Extract JSON from response
             json_start = content.find("{")

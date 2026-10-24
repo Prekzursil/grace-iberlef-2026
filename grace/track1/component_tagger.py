@@ -198,14 +198,13 @@ class ComponentTagger:
     ) -> torch.Tensor:
         """Get logits/emissions from the model (works for both modes)."""
         if self._custom_head:
-            hidden = self.encoder(
-                input_ids=input_ids, attention_mask=attention_mask
-            ).last_hidden_state
+            # custom-head mode guarantees these are set (see __init__)
+            encoder = cast("torch.nn.Module", self.encoder)
+            hidden = encoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
 
             if self.bilstm is not None:
                 hidden, _ = self.bilstm(hidden)
 
-            # custom-head mode guarantees these are set (see __init__)
             dropout = cast("torch.nn.Dropout", self.dropout)
             classifier = cast("torch.nn.Linear", self.classifier)
             hidden = dropout(hidden)
@@ -411,7 +410,8 @@ class ComponentTagger:
             if self.crf is not None:
                 avg_device = averaged.unsqueeze(0).to(device)
                 mask = torch.ones(1, len(sorted_keys), dtype=torch.bool, device=device)
-                label_ids = self.crf.decode(avg_device, mask=mask)[0]
+                # pytorch-crf annotates the legacy ByteTensor type; it takes a bool mask
+                label_ids = self.crf.decode(avg_device, mask=cast("torch.ByteTensor", mask))[0]
             else:
                 label_ids = averaged.argmax(dim=-1).tolist()
 
