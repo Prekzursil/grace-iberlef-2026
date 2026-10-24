@@ -11,6 +11,9 @@ on:
     branches: ["master"]
   pull_request:
     branches: ["master"]
+  # a merge queue's synthetic commit must report the required check too
+  merge_group:
+    types: [checks_requested]
 
 permissions:
   contents: read
@@ -31,17 +34,25 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Install the pinned dependency closure + mypy
+      # requirements.txt is the universal lock, so on Linux it carries torch's CUDA
+      # runtime (nvidia-*, cuda-*, triton): gigabytes a type check never uses. This
+      # job installs the CPU build of the same torch release and the rest of the lock.
+      - name: Install the pinned dependency closure (CPU torch) + mypy
         run: |
+          set -euo pipefail
+          torch_version="$(grep -m1 -E '^torch==' requirements.txt | cut -d= -f3 | cut -d' ' -f1 | cut -d';' -f1)"
+          test -n "$torch_version"
+          grep -v -E '^(nvidia-|cuda-|triton==|torch==)' requirements.txt > "$RUNNER_TEMP/requirements-cpu.txt"
           uv venv
-          uv pip install -r requirements.txt "mypy==2.4.0" "types-PyYAML==6.0.12.20260906"
+          uv pip install --index-url https://download.pytorch.org/whl/cpu "torch==${torch_version}+cpu"
+          uv pip install -r "$RUNNER_TEMP/requirements-cpu.txt" "mypy==2.4.0" "types-PyYAML==6.0.12.20260906"
 
       - name: mypy grace
         run: .venv/bin/mypy grace
@@ -57,7 +68,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
