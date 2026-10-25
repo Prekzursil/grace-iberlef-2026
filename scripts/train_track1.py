@@ -95,9 +95,9 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     batch_size = cfg["training"]["batch_size"]
 
     # ── Phase A: Train ComponentTagger ──────────────────────────────
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Phase A: Training ComponentTagger (BIO entity detection)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     s1_cfg = cfg["task"]["subtask1"]
     tagger = ComponentTagger(
@@ -134,8 +134,7 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
             epoch_loss += loss
             n_batches += 1
         print(
-            f"  [tagger] epoch {epoch + 1}/{num_epochs}: "
-            f"loss={epoch_loss / max(n_batches, 1):.4f}"
+            f"  [tagger] epoch {epoch + 1}/{num_epochs}: loss={epoch_loss / max(n_batches, 1):.4f}"
         )
 
     tagger.save(str(run_dir / "tagger"))
@@ -145,9 +144,9 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     rel_method = s2_cfg.get("method", "pairwise")
     rel_epochs = min(num_epochs, s2_cfg.get("rel_epochs", 5))
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Phase B: Training RelationClassifier [{rel_method}] ({rel_epochs} epochs)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     if rel_method == "nli":
         rel_clf = NLIRelationClassifier(
@@ -189,16 +188,15 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
             epoch_loss += loss
             n_batches += 1
         print(
-            f"  [rel_clf] epoch {epoch + 1}/{rel_epochs}: "
-            f"loss={epoch_loss / max(n_batches, 1):.4f}"
+            f"  [rel_clf] epoch {epoch + 1}/{rel_epochs}: loss={epoch_loss / max(n_batches, 1):.4f}"
         )
 
     rel_clf.save(str(run_dir / "relation"))
 
     # ── Phase C: Predict + Score ────────────────────────────────────
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Phase C: Predicting on dev + scoring")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Step 1: Entity predictions (tagger outputs relations=())
     entity_preds = tagger.predict(dev_cases)

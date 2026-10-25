@@ -1,99 +1,30 @@
+# QZP lean gate — zero tolerance (any finding of any severity fails).
+# Thin caller of quality-zero-platform's reusable workflow, pinned to an exact
+# commit. Gate changes happen in quality-zero-platform, never here; this repo
+# adopts them by bumping the pin below. See CONTRIBUTING.md.
 name: quality
-
-# Lean quality gate (single required check). Six gates, real fixes only:
-#  1. lint + format (ruff + black)
-#  2. types (mypy)
-#  3. tests + STRICT 100% line+branch coverage (pytest --cov-fail-under=100)
-#  4. SAST (Semgrep CE)
-#  5. secrets (gitleaks; push-protection is enabled at the repo level)
-#  6. deps (osv-scanner; Dependabot configured in .github/dependabot.yml)
 
 on:
   push:
-    branches: [master]
+    branches: ["master"]
   pull_request:
-  workflow_dispatch:
+    branches: ["master"]
+  # a merge queue's synthetic commit must report the required check too
+  merge_group:
+    types: [checks_requested]
 
 permissions:
   contents: read
 
 concurrency:
-  group: quality-${{ github.ref }}
-  cancel-in-progress: true
+  # a pull request's runs share one group, so a newer push cancels the superseded
+  # run; every other event (a push, a merge-queue commit) gets a group of its own
+  # commit, so no commit's run is ever replaced while it waits or left untested
+  group: quality-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quality:
-    name: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0  # gitleaks scans full history
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v7
-
-      - name: Cache Hugging Face models
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/huggingface
-          key: hf-${{ runner.os }}-smoke-backbones-v1
-
-      - name: Install dependencies
-        run: |
-          uv venv
-          uv pip install torch --index-url https://download.pytorch.org/whl/cpu
-          uv pip install -e ".[dev]"
-          uv pip install "semgrep>=1.90"
-
-      # ── Gate 1: lint + format ──────────────────────────────────────────
-      - name: Lint (ruff)
-        run: uv run ruff check grace tests scripts
-
-      - name: Format (black --check)
-        run: uv run black --check grace tests
-
-      # ── Gate 2: types ──────────────────────────────────────────────────
-      - name: Types (mypy)
-        run: uv run mypy grace
-
-      # ── Gate 3: tests + STRICT 100% line+branch coverage ───────────────
-      - name: Tests + 100% coverage
-        env:
-          HF_HUB_DISABLE_PROGRESS_BARS: "1"
-          TRANSFORMERS_VERBOSITY: error
-        run: >-
-          uv run pytest
-          --cov=grace --cov-branch --cov-report=term-missing
-          --cov-fail-under=100
-
-      # ── Gate 4: SAST ───────────────────────────────────────────────────
-      - name: SAST (Semgrep CE)
-        env:
-          SEMGREP_SEND_METRICS: "off"
-        run: >-
-          uv run semgrep scan --error --quiet
-          --config=p/python --config=p/security-audit
-          grace scripts
-
-      # ── Gate 5: secrets ────────────────────────────────────────────────
-      - name: Secrets (gitleaks)
-        uses: gitleaks/gitleaks-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ── Gate 6: deps ───────────────────────────────────────────────────
-      - name: Deps (osv-scanner)
-        run: |
-          curl -sSfL \
-            https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64 \
-            -o /usr/local/bin/osv-scanner
-          chmod +x /usr/local/bin/osv-scanner
-          # --no-resolve: the lockfile is already fully resolved by uv, so skip
-          # osv's transitive deps.dev resolution (its RPC errors out -> exit 127).
-          osv-scanner scan --no-resolve --lockfile="requirements.txt:requirements.lock"
+    uses: Prekzursil/quality-zero-platform/.github/workflows/reusable-quality.yml@f84b146aca9432cd852092251d31fec3ab3169d7
+    with:
+      deps-severity-floor: any

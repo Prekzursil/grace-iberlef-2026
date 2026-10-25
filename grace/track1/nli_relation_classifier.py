@@ -94,7 +94,7 @@ class NLIRelationClassifier:
         """
         premise = f"<{e1_type.lower()}> {e1_text} </{e1_type.lower()}> {raw_text}"
         hypothesis = (
-            f'The {e2_type.lower()} "{e2_text}" supports or contradicts ' f"the {e1_type.lower()}."
+            f'The {e2_type.lower()} "{e2_text}" supports or contradicts the {e1_type.lower()}.'
         )
         return premise, hypothesis
 

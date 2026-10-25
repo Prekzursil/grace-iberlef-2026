@@ -23,6 +23,7 @@ import time
 from pathlib import Path
 
 import anthropic
+from anthropic.types import TextBlock
 
 from grace.io.loaders import load_track1
 
@@ -213,7 +214,10 @@ def generate_batch(
                 max_tokens=2000,
                 messages=[{"role": "user", "content": prompt}],
             )
-            content = response.content[0].text
+            block = response.content[0]
+            if not isinstance(block, TextBlock):
+                raise TypeError(f"expected a text block, got {block.type}")
+            content = block.text
 
             # Extract JSON from response
             json_start = content.find("{")
@@ -230,16 +234,16 @@ def generate_batch(
                 case["id"] = f"synthetic_{target}_{i}"
                 results.append(case)
                 print(
-                    f"  [{i+1}/{count}] OK: {len(case.get('entities', []))} entities, "
+                    f"  [{i + 1}/{count}] OK: {len(case.get('entities', []))} entities, "
                     f"{len(case.get('relations', []))} relations"
                 )
             else:
                 failures += 1
-                print(f"  [{i+1}/{count}] INVALID: {'; '.join(errors[:3])}")
+                print(f"  [{i + 1}/{count}] INVALID: {'; '.join(errors[:3])}")
 
         except Exception as e:
             failures += 1
-            print(f"  [{i+1}/{count}] ERROR: {e}")
+            print(f"  [{i + 1}/{count}] ERROR: {e}")
 
         # Rate limiting
         if i < count - 1:

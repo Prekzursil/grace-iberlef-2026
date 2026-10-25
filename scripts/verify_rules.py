@@ -128,8 +128,7 @@ def verify(output: Path) -> None:
             "",
             "## Manual classification (fill in after reading above)",
             "",
-            "- [ ] Closed APIs (Claude, GPT-4) allowed on final test-set "
-            "submission: **YES / NO**",
+            "- [ ] Closed APIs (Claude, GPT-4) allowed on final test-set submission: **YES / NO**",
             "- [ ] Extra pretrained open-weights models allowed: **YES / NO**",
             "- [ ] Cross-lingual data augmentation allowed: **YES / NO**",
             "- [ ] Ensembling across multiple models allowed: **YES / NO**",
