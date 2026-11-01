@@ -70,13 +70,23 @@ def _keep_valid_relations(
     return tuple(kept)
 
 
+def _require_file(path: Path) -> Path:
+    """Resolve and require an existing regular file before any open() (CodeQL
+    py/path-injection hardening: callers pass paths that originate outside the
+    library, so the sink validates its own input)."""
+    resolved = Path(path).resolve()
+    if not resolved.is_file():
+        raise GraceLoadError(f"input file not found: {path}")
+    return resolved
+
+
 def load_track1(path: Path) -> tuple[GraceCase, ...]:
     """Load a Track 1 JSON file (350 train / 50 dev).
 
     Expects ``annotations`` to be a dict with ``entities`` and ``relations``
     keys. Raises :class:`GraceLoadError` on any schema violation.
     """
-    with Path(path).open("r", encoding="utf-8") as f:
+    with _require_file(path).open("r", encoding="utf-8") as f:
         data = json.load(f)
     if not isinstance(data, list):
         raise GraceLoadError(f"{path}: top-level must be a JSON array")
@@ -139,7 +149,7 @@ def load_track2(path: Path) -> tuple[GraceCase, ...]:
     ``choices``, and ``correct_choice_id``. Raises :class:`GraceLoadError` on any
     schema violation.
     """
-    with Path(path).open("r", encoding="utf-8") as f:
+    with _require_file(path).open("r", encoding="utf-8") as f:
         data = json.load(f)
     if not isinstance(data, list):
         raise GraceLoadError(f"{path}: top-level must be a JSON array")

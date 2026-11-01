@@ -1,39 +1,38 @@
+# CodeQL baseline — thin caller of quality-zero-platform's reusable workflow.
+#
+# Keeps this repo's declared scan scope by passing its codeql-config.yml
+# (paths: grace + tests; FINAL/, scripts/, notebooks/, experiments/ are
+# machine-generated or one-off research trees — see that file). The suite is
+# security-and-quality (raised from the wrapper's previous default); the
+# platform is checked out at this file's own workflow SHA (job.workflow_sha)
+# and the analysis fail-closes.
 name: codeql
 
-# CodeQL code-scanning (advanced setup). The default-setup API was not
-# enabled for this repo, so CodeQL is configured in-code here. Runs on pushes
-# to master, on PRs, and nightly-ish on a weekly schedule.
+permissions:
+  actions: read
+  contents: read
+  security-events: write
 
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
+  merge_group:
+    types: [checks_requested]
   schedule:
     - cron: "27 3 * * 1"
-
-permissions:
-  contents: read
-  security-events: write
-
-concurrency:
-  group: codeql-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_dispatch:
 
 jobs:
-  analyze:
-    name: analyze (python)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: python
-          config-file: ./.github/codeql/codeql-config.yml
-
-      - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:python"
+  codeql:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: Prekzursil/quality-zero-platform/.github/workflows/reusable-codeql.yml@cc4c6ec12c2b1f204f79414a717e82472e98cb58
+    with:
+      repo_slug: ${{ github.repository }}
+      event_name: ${{ github.event_name }}
+      sha: ${{ github.event.pull_request.head.sha || github.sha }}
+      codeql_config_file: ./.github/codeql/codeql-config.yml
