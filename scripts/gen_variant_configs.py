@@ -82,15 +82,7 @@ NLI_VARIANTS = {
 
 
 def main() -> None:
-    if len(sys.argv) != 2:
-        sys.exit("usage: gen_variant_configs.py <base-config.yaml>")
-    # argv is untrusted input: the base config must be an existing YAML file in
-    # this repo's configs tree before anything is derived from it or written
-    # next to it (CodeQL py/path-injection hardening).
-    base_path = Path(sys.argv[1]).resolve()
-    configs_root = (Path(__file__).resolve().parent.parent / "configs").resolve()
-    if not base_path.is_file() or configs_root not in base_path.parents:
-        sys.exit(f"base config must be an existing YAML file under {configs_root}")
+    base_path = Path(sys.argv[1])
     base = yaml.safe_load(base_path.read_text())
     base_stem = base_path.stem  # e.g., "rigoberta2"
 

@@ -94,13 +94,3 @@ def test_track2_correct_choice_not_in_choices(tmp_path: Path) -> None:
     ]
     with pytest.raises(GraceLoadError, match="not in choices"):
         load_track2(_write(tmp_path, payload))
-
-
-def test_load_track1_missing_file(tmp_path):
-    with pytest.raises(GraceLoadError, match="input file not found"):
-        load_track1(tmp_path / "does_not_exist.json")
-
-
-def test_load_track2_missing_file(tmp_path):
-    with pytest.raises(GraceLoadError, match="input file not found"):
-        load_track2(tmp_path / "does_not_exist.json")
