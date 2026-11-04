@@ -19,7 +19,7 @@ not silently truncated.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import torch
 from torch.nn import CrossEntropyLoss
@@ -31,7 +31,6 @@ from grace.io.schema import GraceCase
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from typing import Any
 
 
 _LABELS: tuple[str, ...] = (
@@ -119,7 +118,7 @@ class ComponentTagger:
     def __init__(self, cfg: ComponentTaggerConfig) -> None:
         self.cfg = cfg
         self.tokenizer = AutoTokenizer.from_pretrained(cfg.backbone, use_fast=True)
-        self.aligner = SpanAligner(hf_tokenizer=cast("Any", self.tokenizer))
+        self.aligner = SpanAligner(hf_tokenizer=cast(Any, self.tokenizer))  # noqa: TC006 -- direct runtime reference keeps `Any` used (CodeQL py/unused-import)
 
         if cfg.use_crf or cfg.use_bilstm:
             # Use raw encoder + custom head when CRF/BiLSTM is enabled
@@ -488,5 +487,5 @@ class ComponentTagger:
             tagger.model = AutoModelForTokenClassification.from_pretrained(save_dir)
 
         tagger.tokenizer = AutoTokenizer.from_pretrained(save_dir, use_fast=True)
-        tagger.aligner = SpanAligner(hf_tokenizer=cast("Any", tagger.tokenizer))
+        tagger.aligner = SpanAligner(hf_tokenizer=cast(Any, tagger.tokenizer))  # noqa: TC006 -- direct runtime reference keeps `Any` used (CodeQL py/unused-import)
         return tagger
