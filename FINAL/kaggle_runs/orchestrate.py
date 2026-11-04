@@ -22,13 +22,33 @@ USER = "prekzursil"
 MAX_CONCURRENT = 2
 POLL = 60
 
+# Kernel slugs may arrive from sys.argv / the environment; resolve them through
+# the allowlist of job directories that actually exist on disk, so an untrusted
+# value can never steer a filesystem path or the kaggle CLI (paths and slug
+# strings are re-derived from this listing, never from the raw input).
+KERNEL_DIRS: dict[str, Path] = (
+    {p.name: p for p in ROOT.iterdir() if p.is_dir()} if ROOT.is_dir() else {}
+)
+
+
+def safe_slug(raw: str) -> str:
+    """Return the canonical kernel slug, validated against KERNEL_DIRS."""
+    d = KERNEL_DIRS.get(raw)
+    if d is None:
+        raise SystemExit(
+            f"unknown kernel slug {raw!r}; expected one of {sorted(KERNEL_DIRS)}"
+        )
+    return d.name
+
+
 # jobs to launch (dirs). gt1-mrb-s42 already done (0.744) -> excluded.
-TO_LAUNCH = [a for a in sys.argv[1:]] or [
+TO_LAUNCH = [safe_slug(a) for a in sys.argv[1:]] or [
     "gt1-bsc-s42", "gt1-mdb-s42", "gt1-mrb-s100",
     "gt1-bsc-s100", "gt1-rob-s100", "gt1-mdb-s100",
 ]
 # already running outside the orchestrator -> just poll for completion
-ALREADY = os.environ.get("ALREADY_RUNNING", "gt1-rob-s42").split() if os.environ.get("ALREADY_RUNNING", "gt1-rob-s42") else []
+_env_already = os.environ.get("ALREADY_RUNNING", "gt1-rob-s42")
+ALREADY = [safe_slug(s) for s in _env_already.split()] if _env_already else []
 
 
 def sh(cmd: list[str]) -> tuple[int, str]:

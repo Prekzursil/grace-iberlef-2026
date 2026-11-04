@@ -1,8 +1,12 @@
 name: "CodeQL config"
 
-# Scan only the maintained library + its tests. Research/deliverable trees
-# (FINAL/, scripts/, notebooks/, experiments/) are machine-generated or one-off
-# and are already excluded from the lint surface (see .pre-commit-config.yaml).
+# Scan the maintained library, its tests, the operator scripts, and the FINAL
+# Kaggle run tree (orchestrate.py there carries maintained operator logic and
+# has had real taint findings). notebooks/ and experiments/ stay excluded:
+# machine-generated or one-off research trees, also excluded from the lint
+# surface (see .pre-commit-config.yaml).
 paths:
   - grace
   - tests
+  - scripts
+  - FINAL
