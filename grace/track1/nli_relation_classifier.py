@@ -38,9 +38,6 @@ _NLI_CONTRADICTION = 0
 _NLI_NEUTRAL = 1
 _NLI_ENTAILMENT = 2
 
-# GRACE relation labels (same as pairwise classifier for scoring compat)
-_GRACE_LABELS: tuple[str, ...] = ("no-relation", "Support", "Attack", "Partial-Attack")
-
 # Mapping GRACE → NLI for training
 _GRACE_TO_NLI = {
     "Support": _NLI_ENTAILMENT,

@@ -17,14 +17,13 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from grace.io.offsets import SpanAligner
 from grace.io.schema import GraceCase, GraceEntity
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from typing import Any
 
 _log = logging.getLogger(__name__)
 
@@ -109,7 +108,7 @@ class PremiseExtractor:
                     text=case.raw_text[abs_start:abs_end],
                     start=abs_start,
                     end=abs_end,
-                    type=cast("Any", "Premise"),
+                    type=cast(Any, "Premise"),  # noqa: TC006 -- runtime reference keeps `Any` used (CodeQL py/unused-import)
                 )
             )
 
