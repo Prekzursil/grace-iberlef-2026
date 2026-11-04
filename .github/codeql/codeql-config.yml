@@ -8,6 +8,11 @@ name: "CodeQL config"
 # raised in FINAL/kaggle_runs/orchestrate.py were fixed in PRs #22/#23
 # before the tree returned to its documented frozen-record scope.
 
+paths:
+  - grace
+  - tests
+  - scripts
+
 # Fleet CODEQL DECISION (owner): BOTH suites must run. The QZP
 # reusable-codeql.yml wrapper pins `queries: security-and-quality` on the
 # init step; CodeQL MERGES config-file queries with that input, so declaring
