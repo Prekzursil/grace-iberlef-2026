@@ -17,13 +17,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 from grace.io.offsets import SpanAligner
 from grace.io.schema import GraceCase, GraceEntity
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from typing import Any
 
 _log = logging.getLogger(__name__)
 

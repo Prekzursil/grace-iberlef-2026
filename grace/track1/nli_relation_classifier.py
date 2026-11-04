@@ -19,7 +19,6 @@ Input encoding:
 
 from __future__ import annotations
 
-import logging
 import random
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
@@ -33,7 +32,6 @@ from grace.io.schema import GraceCase, GraceRelation
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-_log = logging.getLogger(__name__)
 
 # NLI model output indices (standard for cross-encoder NLI models)
 _NLI_CONTRADICTION = 0
@@ -42,7 +40,6 @@ _NLI_ENTAILMENT = 2
 
 # GRACE relation labels (same as pairwise classifier for scoring compat)
 _GRACE_LABELS: tuple[str, ...] = ("no-relation", "Support", "Attack", "Partial-Attack")
-_GRACE_LABEL2ID = {lbl: i for i, lbl in enumerate(_GRACE_LABELS)}
 
 # Mapping GRACE → NLI for training
 _GRACE_TO_NLI = {

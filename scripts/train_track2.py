@@ -56,10 +56,6 @@ def _git_sha() -> str:
         return "unknown"
 
 
-# Track 2 BIO labels (no MajorClaim)
-_T2_LABELS = ("O", "B-Premise", "I-Premise", "B-Claim", "I-Claim")
-
-
 def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     cfg: dict[str, Any] = yaml.safe_load(config.read_text(encoding="utf-8"))
     _set_seed(seed)
