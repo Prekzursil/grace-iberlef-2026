@@ -104,13 +104,36 @@ def audit(data_dir: Path) -> dict[str, Any]:
     return results
 
 
+def _resolve_data_dir(raw: Path) -> Path:
+    """Resolve the audited data directory against the working tree.
+
+    ``raw`` arrives from sys.argv and must never steer file reads directly.
+    Re-derive the location by matching the argument's final component among
+    the directories that actually exist under the current working tree, so
+    the audited tree is always a real on-disk directory inside it and an
+    untrusted value cannot point the audit at arbitrary files.
+    """
+    cwd = Path.cwd().resolve()
+    suffix = raw.as_posix().strip("/")
+    hits = sorted(
+        p
+        for p in cwd.rglob(raw.name)
+        if p.is_dir() and p.resolve().relative_to(cwd).as_posix().endswith(suffix)
+    )
+    if len(hits) != 1:
+        raise SystemExit(
+            f"could not resolve data dir {suffix!r} to exactly one directory under "
+            f"{cwd} (found {len(hits)}); pass a relative path like "
+            "'downloaded_data/public_data/public_data'"
+        )
+    return hits[0]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("data_dir", type=Path, help="Path to public_data/public_data/")
     args = parser.parse_args()
-    if not args.data_dir.exists():
-        raise SystemExit(f"data_dir does not exist: {args.data_dir}")
-    audit(args.data_dir)
+    audit(_resolve_data_dir(args.data_dir))
 
 
 if __name__ == "__main__":

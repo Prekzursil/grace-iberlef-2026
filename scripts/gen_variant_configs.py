@@ -81,8 +81,34 @@ NLI_VARIANTS = {
 }
 
 
+CONFIGS_ROOT = Path(__file__).resolve().parent.parent / "configs"
+
+
+def _resolve_base_config(raw: str) -> Path:
+    """Resolve the base config to a file inside the repo's configs/ tree.
+
+    ``raw`` arrives from sys.argv; take only its final path component and
+    re-resolve it against the YAML files that actually exist under configs/,
+    so an untrusted value can never steer the base read or the variant writes
+    outside the configs/ tree.
+    """
+    name = Path(raw).name
+    matches = sorted(p for p in CONFIGS_ROOT.rglob(name) if p.is_file() and p.suffix == ".yaml")
+    if len(matches) != 1:
+        raise SystemExit(
+            f"base config {name!r} must resolve to exactly one YAML file under "
+            f"{CONFIGS_ROOT} (found {len(matches)}); usage: python "
+            "scripts/gen_variant_configs.py configs/track1/rigoberta2.yaml"
+        )
+    return matches[0]
+
+
 def main() -> None:
-    base_path = Path(sys.argv[1])
+    if len(sys.argv) != 2:
+        raise SystemExit(
+            "usage: python scripts/gen_variant_configs.py configs/track1/rigoberta2.yaml"
+        )
+    base_path = _resolve_base_config(sys.argv[1])
     base = yaml.safe_load(base_path.read_text())
     base_stem = base_path.stem  # e.g., "rigoberta2"
 
