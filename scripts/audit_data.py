@@ -108,25 +108,22 @@ def _resolve_data_dir(raw: Path) -> Path:
     """Resolve the audited data directory against the working tree.
 
     ``raw`` arrives from sys.argv and must never steer file reads directly.
-    Re-derive the location by matching the argument's final component among
-    the directories that actually exist under the current working tree, so
-    the audited tree is always a real on-disk directory inside it and an
-    untrusted value cannot point the audit at arbitrary files.
+    Select it from the directories that actually exist under the current
+    working tree (constant glob pattern — the raw value is used only as the
+    lookup key), so the audited tree is always a real on-disk directory
+    inside it and an untrusted value cannot point the audit at arbitrary
+    files.
     """
     cwd = Path.cwd().resolve()
-    suffix = raw.as_posix().strip("/")
-    hits = sorted(
-        p
-        for p in cwd.rglob(raw.name)
-        if p.is_dir() and p.resolve().relative_to(cwd).as_posix().endswith(suffix)
-    )
-    if len(hits) != 1:
+    wanted = raw.as_posix().strip("./")
+    known_dirs = {p.relative_to(cwd).as_posix(): p for p in cwd.rglob("*") if p.is_dir()}
+    resolved = known_dirs.get(wanted)
+    if resolved is None:
         raise SystemExit(
-            f"could not resolve data dir {suffix!r} to exactly one directory under "
-            f"{cwd} (found {len(hits)}); pass a relative path like "
-            "'downloaded_data/public_data/public_data'"
+            f"data_dir must name a directory inside the working tree, got {wanted!r} "
+            "(e.g. downloaded_data/public_data/public_data)"
         )
-    return hits[0]
+    return resolved
 
 
 def main() -> None:
