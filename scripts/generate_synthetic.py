@@ -253,6 +253,27 @@ def generate_batch(
     return results
 
 
+def _resolve_train_file(raw: Path) -> Path:
+    """Resolve the training data file against the working tree.
+
+    ``raw`` arrives from sys.argv and must never steer a file read directly.
+    Select it from the JSON files that actually exist under the current
+    working tree (constant glob pattern — the raw value is used only as the
+    lookup key), so an untrusted value cannot point the loader at an
+    arbitrary location.
+    """
+    cwd = Path.cwd().resolve()
+    wanted = raw.as_posix().strip("./")
+    known_files = {p.relative_to(cwd).as_posix(): p for p in cwd.rglob("*.json") if p.is_file()}
+    resolved = known_files.get(wanted)
+    if resolved is None:
+        raise SystemExit(
+            f"--train must name a JSON file inside the working tree, got {wanted!r} "
+            f"(e.g. downloaded_data/public_data/public_data/track_1_train.json)"
+        )
+    return resolved
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", choices=["majorclaim", "attack", "both"], default="both")
@@ -268,17 +289,18 @@ def main() -> None:
 
     client = anthropic.Anthropic()
     args.output.mkdir(parents=True, exist_ok=True)
+    train_file = _resolve_train_file(args.train)
 
     if args.target in ("majorclaim", "both"):
         print(f"\n=== Generating {args.count} MajorClaim abstracts ===")
-        mc_cases = generate_batch(client, "majorclaim", args.count, args.train, args.model)
+        mc_cases = generate_batch(client, "majorclaim", args.count, train_file, args.model)
         out_path = args.output / "synthetic_majorclaim.json"
         out_path.write_text(json.dumps(mc_cases, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Saved to {out_path}")
 
     if args.target in ("attack", "both"):
         print(f"\n=== Generating {args.count} Attack-rich abstracts ===")
-        atk_cases = generate_batch(client, "attack", args.count, args.train, args.model)
+        atk_cases = generate_batch(client, "attack", args.count, train_file, args.model)
         out_path = args.output / "synthetic_attack.json"
         out_path.write_text(json.dumps(atk_cases, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Saved to {out_path}")
