@@ -19,7 +19,7 @@ not silently truncated.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 import torch
 from torch.nn import CrossEntropyLoss
@@ -31,6 +31,7 @@ from grace.io.schema import GraceCase
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from typing import Any
 
 
 _LABELS: tuple[str, ...] = (

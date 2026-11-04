@@ -1,15 +1,12 @@
 name: "CodeQL config"
 
-# Scan the maintained library, its tests, the operator scripts, and the FINAL
-# Kaggle run tree (orchestrate.py there carries maintained operator logic and
-# has had real taint findings). notebooks/ and experiments/ stay excluded:
+# Scan the maintained code: the library, its tests, and the operator scripts
+# (scripts/ is maintained per pyproject's [tool.ruff] policy). FINAL/,
+# notebooks/ and experiments/ stay excluded: frozen Kaggle-run records,
 # machine-generated or one-off research trees, also excluded from the lint
-# surface (see .pre-commit-config.yaml).
-paths:
-  - grace
-  - tests
-  - scripts
-  - FINAL
+# surface (see .pre-commit-config.yaml). The real taint findings CodeQL
+# raised in FINAL/kaggle_runs/orchestrate.py were fixed in PRs #22/#23
+# before the tree returned to its documented frozen-record scope.
 
 # Fleet CODEQL DECISION (owner): BOTH suites must run. The QZP
 # reusable-codeql.yml wrapper pins `queries: security-and-quality` on the

@@ -59,23 +59,17 @@ def oversample_rare_classes(
 
         # Determine the highest applicable factor
         factor = 1
-        reason = ""
 
         if "MajorClaim" in entity_types:
             factor = max(factor, majorclaim_factor)
-            reason = "MajorClaim"
             stats["majorclaim"] += 1
 
         if "Attack" in relation_types:
             factor = max(factor, attack_factor)
-            if not reason:
-                reason = "Attack"
             stats["attack"] += 1
 
         if "Partial-Attack" in relation_types:
             factor = max(factor, partial_attack_factor)
-            if not reason:
-                reason = "Partial-Attack"
             stats["partial_attack"] += 1
 
         # Add duplicates (factor - 1 copies since original is already in the list)
