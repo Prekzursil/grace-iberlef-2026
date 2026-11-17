@@ -97,8 +97,7 @@ class SpanAligner:
             actual = text[e.start : e.end]
             if actual != e.text:
                 raise AlignmentError(
-                    f"entity {e.id}: text {e.text!r} != raw_text[{e.start}:{e.end}] = "
-                    f"{actual!r}"
+                    f"entity {e.id}: text {e.text!r} != raw_text[{e.start}:{e.end}] = {actual!r}"
                 )
 
     # ------------------------------------------------------------------

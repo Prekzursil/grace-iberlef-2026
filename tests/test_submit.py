@@ -79,12 +79,13 @@ def test_validator_rejects_unknown_track(fake_scorer_paths: Path, tmp_path: Path
 
 def test_validator_wraps_scorer_crash(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """A non-validation exception from the scorer is wrapped, not leaked."""
-    import grace.submit.validator as validator_mod
 
     def boom(*_a, **_k):
         raise RuntimeError("scorer exploded")
 
-    monkeypatch.setattr(validator_mod, "score_track1_from_file", boom)
+    # string-target setattr: the module is already imported `from` at the top
+    # of this file; importing it again `as` would trip py/import-and-import-from.
+    monkeypatch.setattr("grace.submit.validator.score_track1_from_file", boom)
     out = tmp_path / "sub.json"
     out.write_text('[{"id": "x"}]', encoding="utf-8")
     with pytest.raises(SubmissionValidationError, match="scorer crashed"):

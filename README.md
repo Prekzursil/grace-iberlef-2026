@@ -20,7 +20,7 @@ The live results come from `FINAL/`; `grace/` is the earlier, separately-tested 
 - `scripts/` — install/health/uninstall scripts + probe results
 - `data/` — downloads, results, caches (gitignored)
 - `docs/plans/` — design docs and implementation plans
-- `requirements.lock` — frozen dependency list (reproducibility)
+- `requirements.txt` — frozen dependency list (reproducibility; `uv pip compile`, see its header)
 
 ## Facts
 

@@ -23,6 +23,7 @@ import time
 from pathlib import Path
 
 import anthropic
+from anthropic.types import TextBlock
 
 from grace.io.loaders import load_track1
 
@@ -213,7 +214,10 @@ def generate_batch(
                 max_tokens=2000,
                 messages=[{"role": "user", "content": prompt}],
             )
-            content = response.content[0].text
+            block = response.content[0]
+            if not isinstance(block, TextBlock):
+                raise TypeError(f"expected a text block, got {block.type}")
+            content = block.text
 
             # Extract JSON from response
             json_start = content.find("{")
@@ -230,16 +234,16 @@ def generate_batch(
                 case["id"] = f"synthetic_{target}_{i}"
                 results.append(case)
                 print(
-                    f"  [{i+1}/{count}] OK: {len(case.get('entities', []))} entities, "
+                    f"  [{i + 1}/{count}] OK: {len(case.get('entities', []))} entities, "
                     f"{len(case.get('relations', []))} relations"
                 )
             else:
                 failures += 1
-                print(f"  [{i+1}/{count}] INVALID: {'; '.join(errors[:3])}")
+                print(f"  [{i + 1}/{count}] INVALID: {'; '.join(errors[:3])}")
 
         except Exception as e:
             failures += 1
-            print(f"  [{i+1}/{count}] ERROR: {e}")
+            print(f"  [{i + 1}/{count}] ERROR: {e}")
 
         # Rate limiting
         if i < count - 1:
@@ -247,6 +251,27 @@ def generate_batch(
 
     print(f"\nGenerated {len(results)}/{count} valid cases ({failures} failures)")
     return results
+
+
+def _resolve_train_file(raw: Path) -> Path:
+    """Resolve the training data file against the working tree.
+
+    ``raw`` arrives from sys.argv and must never steer a file read directly.
+    Select it from the JSON files that actually exist under the current
+    working tree (constant glob pattern — the raw value is used only as the
+    lookup key), so an untrusted value cannot point the loader at an
+    arbitrary location.
+    """
+    cwd = Path.cwd().resolve()
+    wanted = raw.as_posix().strip("./")
+    known_files = {p.relative_to(cwd).as_posix(): p for p in cwd.rglob("*.json") if p.is_file()}
+    resolved = known_files.get(wanted)
+    if resolved is None:
+        raise SystemExit(
+            f"--train must name a JSON file inside the working tree, got {wanted!r} "
+            f"(e.g. downloaded_data/public_data/public_data/track_1_train.json)"
+        )
+    return resolved
 
 
 def main() -> None:
@@ -264,17 +289,18 @@ def main() -> None:
 
     client = anthropic.Anthropic()
     args.output.mkdir(parents=True, exist_ok=True)
+    train_file = _resolve_train_file(args.train)
 
     if args.target in ("majorclaim", "both"):
         print(f"\n=== Generating {args.count} MajorClaim abstracts ===")
-        mc_cases = generate_batch(client, "majorclaim", args.count, args.train, args.model)
+        mc_cases = generate_batch(client, "majorclaim", args.count, train_file, args.model)
         out_path = args.output / "synthetic_majorclaim.json"
         out_path.write_text(json.dumps(mc_cases, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Saved to {out_path}")
 
     if args.target in ("attack", "both"):
         print(f"\n=== Generating {args.count} Attack-rich abstracts ===")
-        atk_cases = generate_batch(client, "attack", args.count, args.train, args.model)
+        atk_cases = generate_batch(client, "attack", args.count, train_file, args.model)
         out_path = args.output / "synthetic_attack.json"
         out_path.write_text(json.dumps(atk_cases, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Saved to {out_path}")

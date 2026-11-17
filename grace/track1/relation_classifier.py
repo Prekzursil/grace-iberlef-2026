@@ -17,7 +17,6 @@ per-pair loop that was ~25 min on H100 for the full dev set.
 
 from __future__ import annotations
 
-import logging
 import random
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
@@ -31,7 +30,6 @@ from grace.io.schema import GraceCase, GraceRelation
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-_log = logging.getLogger(__name__)
 
 _LABELS: tuple[str, ...] = ("no-relation", "Support", "Attack", "Partial-Attack")
 _LABEL2ID = {lbl: i for i, lbl in enumerate(_LABELS)}

@@ -12,7 +12,6 @@ Output: binary logit (relevant / not-relevant)
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 
@@ -24,8 +23,6 @@ from grace.io.schema import GraceCase, SentRelevancy
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-
-_log = logging.getLogger(__name__)
 
 
 @dataclass(slots=True)

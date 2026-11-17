@@ -118,7 +118,7 @@ class ComponentTagger:
     def __init__(self, cfg: ComponentTaggerConfig) -> None:
         self.cfg = cfg
         self.tokenizer = AutoTokenizer.from_pretrained(cfg.backbone, use_fast=True)
-        self.aligner = SpanAligner(hf_tokenizer=cast("Any", self.tokenizer))
+        self.aligner = SpanAligner(hf_tokenizer=cast(Any, self.tokenizer))  # noqa: TC006 -- direct runtime reference keeps `Any` used (CodeQL py/unused-import)
 
         if cfg.use_crf or cfg.use_bilstm:
             # Use raw encoder + custom head when CRF/BiLSTM is enabled
@@ -198,14 +198,13 @@ class ComponentTagger:
     ) -> torch.Tensor:
         """Get logits/emissions from the model (works for both modes)."""
         if self._custom_head:
-            hidden = self.encoder(
-                input_ids=input_ids, attention_mask=attention_mask
-            ).last_hidden_state
+            # custom-head mode guarantees these are set (see __init__)
+            encoder = cast("torch.nn.Module", self.encoder)
+            hidden = encoder(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
 
             if self.bilstm is not None:
                 hidden, _ = self.bilstm(hidden)
 
-            # custom-head mode guarantees these are set (see __init__)
             dropout = cast("torch.nn.Dropout", self.dropout)
             classifier = cast("torch.nn.Linear", self.classifier)
             hidden = dropout(hidden)
@@ -411,7 +410,8 @@ class ComponentTagger:
             if self.crf is not None:
                 avg_device = averaged.unsqueeze(0).to(device)
                 mask = torch.ones(1, len(sorted_keys), dtype=torch.bool, device=device)
-                label_ids = self.crf.decode(avg_device, mask=mask)[0]
+                # pytorch-crf annotates the legacy ByteTensor type; it takes a bool mask
+                label_ids = self.crf.decode(avg_device, mask=cast("torch.ByteTensor", mask))[0]
             else:
                 label_ids = averaged.argmax(dim=-1).tolist()
 
@@ -487,5 +487,5 @@ class ComponentTagger:
             tagger.model = AutoModelForTokenClassification.from_pretrained(save_dir)
 
         tagger.tokenizer = AutoTokenizer.from_pretrained(save_dir, use_fast=True)
-        tagger.aligner = SpanAligner(hf_tokenizer=cast("Any", tagger.tokenizer))
+        tagger.aligner = SpanAligner(hf_tokenizer=cast(Any, tagger.tokenizer))  # noqa: TC006 -- direct runtime reference keeps `Any` used (CodeQL py/unused-import)
         return tagger

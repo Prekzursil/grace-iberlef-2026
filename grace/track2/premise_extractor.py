@@ -108,7 +108,7 @@ class PremiseExtractor:
                     text=case.raw_text[abs_start:abs_end],
                     start=abs_start,
                     end=abs_end,
-                    type=cast("Any", "Premise"),
+                    type=cast(Any, "Premise"),  # noqa: TC006 -- runtime reference keeps `Any` used (CodeQL py/unused-import)
                 )
             )
 

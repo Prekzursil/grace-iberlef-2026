@@ -56,10 +56,6 @@ def _git_sha() -> str:
         return "unknown"
 
 
-# Track 2 BIO labels (no MajorClaim)
-_T2_LABELS = ("O", "B-Premise", "I-Premise", "B-Claim", "I-Claim")
-
-
 def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     cfg: dict[str, Any] = yaml.safe_load(config.read_text(encoding="utf-8"))
     _set_seed(seed)
@@ -81,9 +77,9 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     batch_size = cfg["training"]["batch_size"]
 
     # ── Phase A: Train SentenceClassifier ───────────────────────────
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Phase A: Training SentenceClassifier (binary relevance)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     sent_cfg = cfg["task"].get("subtask1", {})
     sent_clf = SentenceClassifier(
@@ -123,9 +119,9 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     s2_cfg = cfg["task"].get("subtask2", {})
     tagger_epochs = s2_cfg.get("tagger_epochs", num_epochs)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Phase B: Training Entity Tagger ({tagger_epochs} epochs)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     tagger = ComponentTagger(
         ComponentTaggerConfig(
@@ -168,9 +164,9 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     rel_method = s2_cfg.get("rel_method", "pairwise")
     rel_epochs = min(num_epochs, s2_cfg.get("rel_epochs", 5))
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Phase C: Training RelationClassifier [{rel_method}] ({rel_epochs} epochs)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     if rel_method == "nli":
         rel_clf = NLIRelationClassifier(
@@ -211,14 +207,13 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
             epoch_loss += loss
             n_batches += 1
         print(
-            f"  [rel_clf] epoch {epoch + 1}/{rel_epochs}: "
-            f"loss={epoch_loss / max(n_batches, 1):.4f}"
+            f"  [rel_clf] epoch {epoch + 1}/{rel_epochs}: loss={epoch_loss / max(n_batches, 1):.4f}"
         )
 
     # ── Phase D: Predict + Score ────────────────────────────────────
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Phase D: Predicting on dev + scoring")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Step 1: Sentence relevancy predictions
     sent_preds = sent_clf.predict(dev_cases)

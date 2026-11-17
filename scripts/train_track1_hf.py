@@ -26,6 +26,7 @@ from transformers import (
     AutoModelForTokenClassification,
     AutoTokenizer,
     DataCollatorForTokenClassification,
+    PreTrainedTokenizerFast,
     Trainer,
     TrainingArguments,
 )
@@ -57,7 +58,7 @@ class GraceTokenClassificationDataset(Dataset):
     def __init__(
         self,
         cases: list[GraceCase],
-        tokenizer: AutoTokenizer,
+        tokenizer: PreTrainedTokenizerFast,
         max_length: int = 512,
     ) -> None:
         self.items: list[dict[str, Any]] = []
@@ -130,6 +131,9 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
     backbone = cfg["backbone"]
     max_length = cfg["task"]["subtask1"]["max_length"]
     tokenizer = AutoTokenizer.from_pretrained(backbone, use_fast=True)
+    if not isinstance(tokenizer, PreTrainedTokenizerFast):
+        # SpanAligner maps character offsets, which only fast tokenizers report
+        raise TypeError(f"{backbone} has no fast tokenizer (got {type(tokenizer).__name__})")
 
     print("Building datasets...")
     train_dataset = GraceTokenClassificationDataset(train_cases, tokenizer, max_length)
@@ -155,7 +159,8 @@ def train(config: Path, seed: int, out: Path) -> dict[str, Any]:
         gradient_accumulation_steps=grad_accum,
         learning_rate=cfg["training"]["learning_rate"],
         weight_decay=cfg["training"]["weight_decay"],
-        warmup_ratio=cfg["training"].get("warmup_ratio", 0.1),
+        # transformers 5: a float in [0, 1) is a ratio of the total steps
+        warmup_steps=cfg["training"].get("warmup_ratio", 0.1),
         lr_scheduler_type="linear",
         fp16=cfg["training"].get("mixed_precision") == "fp16",
         logging_steps=10,
